@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <limits.h>
 #include <errno.h>
+#include "board.h"
 
 // Move mode.
 enum moveMode {
@@ -103,6 +104,12 @@ void parseCMDArgs(int argc, const char * const *argv) {
  */
 int main(int argc, const char * const *argv) {
     parseCMDArgs(argc, argv);
+    struct board* board = makeBoard();
+    if(board == NULL){
+      perror("board");
+      return 1;
+    }
+    printBoard(board);
     char buff[512];
     for(size_t bytesRead = 0; bytesRead < sizeof(buff);
         bytesRead += strlen(buff + bytesRead)) {
@@ -113,5 +120,6 @@ int main(int argc, const char * const *argv) {
         }
     }
     printf(buff);
+
     return 0;
 }
