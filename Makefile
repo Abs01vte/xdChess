@@ -27,7 +27,7 @@ TARGET=xdchess
 .PHONY: clean run
 
 # Linking step.
-$(TARGET): main.o board.o
+$(TARGET): main.o board.o list.o
 	$(CC) -o $@ $? $(LDFLAGS)
 
 # Building steps.
@@ -35,6 +35,9 @@ main.o: main.c
 	$(CC) -o $@ $(CFLAGS) $<
 
 board.o: board.c
+	$(CC) -o $@ $(CFLAGS) $<
+
+list.o: list.c
 	$(CC) -o $@ $(CFLAGS) $<
 
 run: $(TARGET)

@@ -27,6 +27,7 @@
 #include <limits.h>
 #include <errno.h>
 #include "board.h"
+#include "list.h"
 
 // Move mode.
 enum moveMode {
