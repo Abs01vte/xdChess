@@ -4,11 +4,17 @@
 #include <stdio.h>
 #include "list.h"
 #include <regex.h>
+#include <stdbool.h>
+#include "moves.h"
+#include <ctype.h>
+
 regex_t firstCharacter;
 regex_t numberMatcher;
+
 enum noteState {
   PAWNSTATE, PIECESTATE, CASTLESTATE, TAKESTATE, ERRORSTATE, IDLESTATE
 };
+
 bool initMoves(void){
   int value;
 
@@ -113,12 +119,12 @@ struct linkedList* getList(FILE* file1, FILE* file2){
     size_t buffLen = sizeof(buff);
     for(size_t i = 0; i < buffLen; i++){
       if(state == IDLESTATE){
-        if(regexec(buff+i, firstCharacter, 0, NULL, 0) == 0){
+        if(regexec(&firstCharacter, buff+i, 0, NULL, 0) == 0){
           state = getFirstPart(&move, buff[i]);
         }
       }
       else if (state == PAWNSTATE){
-        if(regexec(buff+i, numberMatcher, 0, NULL, 0) == 0){
+        if(regexec(&numberMatcher, buff+i, 0, NULL, 0) == 0){
           move.rank = buff[i]-48;
           addList(&move, list);
           state = IDLESTATE;
