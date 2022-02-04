@@ -34,6 +34,12 @@ struct board* makeBoard(void){
       else{
         newBoard->tiles[i][j].piece = EMPTY;
       }
+      if(i < 2){
+        newBoard->tiles[i][j].player = BLACK;
+      }
+      else if(i > 5){
+        newBoard->tiles[i][j].player = WHITE;
+      }
     }
   }
 }
@@ -42,8 +48,19 @@ void printBoard(struct board* board){
   for(int i = 0; i < 8; i++){
     printf("%d [ ", i+1);
     for(int j = 0; j < 8; j++){
-      printf("%c ", board->tiles[i][j].piece);
+      if(board->tiles[i][j].player == BLACK){
+        printf("\033[30;1;1m%c \033[0m", board->tiles[i][j].piece);
+      }
+      else if(board->tiles[i][j].player == WHITE){
+        printf("\033[97;1;1m%c \033[0m", board->tiles[i][j].piece);
+      }
+      else{
+        printf("%c ", board->tiles[i][j].piece);
+      }
     }
     printf("]\n");
   }
+}
+void destroyBoard(struct board* board){
+  free(board);
 }

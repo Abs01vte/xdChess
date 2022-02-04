@@ -15,4 +15,5 @@ struct board {
 };
 void printBoard(struct board*);
 struct board* makeBoard(void);
+void destroyBoard(struct board*);
 #endif

@@ -28,7 +28,7 @@ TARGET=xdchess
 
 # Linking step.
 $(TARGET): main.o board.o list.o
-	$(CC) -o $@ $? $(LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Building steps.
 main.o: main.c
@@ -37,7 +37,7 @@ main.o: main.c
 board.o: board.c
 	$(CC) -o $@ $(CFLAGS) $<
 
-list.o: list.c
+list.o: list.c list.h
 	$(CC) -o $@ $(CFLAGS) $<
 
 run: $(TARGET)

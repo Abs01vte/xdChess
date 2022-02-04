@@ -121,6 +121,6 @@ int main(int argc, const char * const *argv) {
         }
     }
     printf(buff);
-
+    destroyBoard(board);
     return 0;
 }
