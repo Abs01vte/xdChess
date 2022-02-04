@@ -2,6 +2,7 @@
 #include "board.h"
 #include <string.h>
 #include <stdio.h>
+#include "moves.h"
 
 // Initilizing the board
 struct board* makeBoard(void){
@@ -64,6 +65,31 @@ void printBoard(struct board* board){
     }
     printf("]\n");
   }
+}
+struct board* updateBoard(const struct board* board, const struct move* move){
+  struct board* newBoard = makeBoard();
+  if(newBoard == NULL || board == NULL){
+    return NULL;
+  }
+  *newBoard = *board;
+  newBoard->tiles[move->file-'A'][move->rank].player = move->player;
+  newBoard->tiles[move->file-'A'][move->rank].piece = move->piece;
+  switch(move->piece){
+    case PAWN:
+      {
+        for(int i = 0; i < 8; i++){
+          if(newBoard->tiles[move->file-'A'][i].piece == newBoard->tiles[move->file-'A'][move->rank-1].piece){
+            newBoard->tiles[move->file-'A'][i].piece = EMPTY;
+            newBoard->tiles[move->file-'A'][i].player = NONE;
+          }
+          else{
+            continue;
+          }
+        }
+      }
+    break;
+  }
+  return newBoard;
 }
 void destroyBoard(struct board* board){
   free(board);

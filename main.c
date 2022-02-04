@@ -28,6 +28,7 @@
 #include <errno.h>
 #include "board.h"
 #include "list.h"
+#include "moves.h"
 
 // Move mode.
 enum moveMode {
@@ -111,16 +112,20 @@ int main(int argc, const char * const *argv) {
       return 1;
     }
     printBoard(board);
-    char buff[512];
-    for(size_t bytesRead = 0; bytesRead < sizeof(buff);
-        bytesRead += strlen(buff + bytesRead)) {
-        char* retVal = fgets(buff + bytesRead, sizeof(buff) - bytesRead,
-                             file1);
-        if(retVal == NULL) {
-            break;
-        }
+    initMoves();
+    struct linkedList* list = getList(file1, file2);
+    printf("%zu ", list->size);
+    struct node* moveNode = list->first;
+    for(int i = 0; i < list->size; i++){
+      struct move* move = (struct move*)moveNode->data;
+      struct board* newBoard = updateBoard(board, move);
+      destroyBoard(board);
+      printBoard(newBoard);
+      board = newBoard;
+      moveNode = moveNode->next;
     }
-    printf(buff);
+
+    destroyList(list);
     destroyBoard(board);
     return 0;
 }
