@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
+// Initilizing the board
 struct board* makeBoard(void){
   struct board* newBoard = malloc( sizeof(struct board) );
   if(newBoard == NULL){
@@ -11,6 +12,7 @@ struct board* makeBoard(void){
   memset(newBoard, '-', sizeof(*newBoard));
   for(int i = 0; i < 8; i++){
     for(int j = 0; j < 8; j++){
+      // this if is for the backranks of both sides
       if(i == 0 || i == 7){
         if(j == 0 || j == 7){
           newBoard->tiles[i][j].piece = ROOK;
@@ -28,6 +30,7 @@ struct board* makeBoard(void){
           newBoard->tiles[i][j].piece = KING;
         }
       }
+      // this if is for the pawn ranks of both sides
       else if(i == 1 || i == 6){
         newBoard->tiles[i][j].piece = PAWN;
       }
@@ -43,6 +46,7 @@ struct board* makeBoard(void){
     }
   }
 }
+//Displays the board
 void printBoard(struct board* board){
   printf("    A B C D E F G H\n");
   for(int i = 0; i < 8; i++){

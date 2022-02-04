@@ -2,13 +2,23 @@
 #define MOVES_H
 
 #include "board.h"
-enum rank {
-  A = 0, B = 1, C = 2, D = 3, E = 4, F = 5, G = 6, H = 7
+#include <stdbool.h>
+enum file {
+  A = 'A', B = 'B', C = 'C', D = 'D', E = 'E', F = 'F', G = 'G', H = 'H'
 };
-struct movesList {
+struct move {
+  //Player is the player that makes the move.
+  enum player player;
+  //Piece is the piece that is being moved.
   enum piece piece;
-  enum rank rank;
-  int file;
+  //File is the letter, or vertical groupings on the board.
+  enum file file;
+  //Rank defines the horizontal groupings on the board. Negative one means castling.
+  int rank;
 };
+
+struct linkedList* getList(FILE* file1, FILE* file2);
+bool initMoves(void);
+void quitMoves(void);
 
 #endif

@@ -17,4 +17,5 @@ struct linkedList* makeList(size_t dataLen);
 void destroyList(struct linkedList* list);
 void addList(const void* item, struct linkedList* list);
 void printList(struct linkedList* list);
+
 #endif
