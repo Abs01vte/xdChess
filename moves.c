@@ -126,6 +126,7 @@ struct linkedList* getList(FILE* file1, FILE* file2){
         // This is very simple due to all chess information being only one
         // character in length.
 
+        // Constant string that represents the current character.
         const char curStr[] = {buff[i], '\0'};
         switch(state) {
         case IDLESTATE:
@@ -134,7 +135,7 @@ struct linkedList* getList(FILE* file1, FILE* file2){
             }
             break;
         case PAWNSTATE:
-            if(regexec(&numberMatcher, buff+i, 0, NULL, 0) == 0){
+            if(regexec(&numberMatcher, curStr, 0, NULL, 0) == 0){
                 move.rank = buff[i]-'0';
                 addList(&move, list);
                 state = IDLESTATE;
