@@ -114,7 +114,7 @@ int main(int argc, const char * const *argv) {
     printBoard(board);
     initMoves();
     struct linkedList* list = getList(file1, file2);
-    printf("%zu ", list->size);
+    printf("List size is %zu\n", list->size);
     struct node* moveNode = list->first;
     for(int i = 0; i < list->size; i++){
       struct move* move = (struct move*)moveNode->data;
