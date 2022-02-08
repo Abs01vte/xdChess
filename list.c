@@ -44,24 +44,25 @@ void destroyList(struct linkedList* list){
   }
   free(list);
 }
-void addList(const void* item, struct linkedList* list){
+void *addList(const void* item, struct linkedList* list){
   if(item == NULL){
-    return;
+    return NULL;
   }
   if(list == NULL){
-    return;
+    return NULL;
   }
   struct node* node = makeNode();
   if(node == NULL){
-    return;
+    return NULL;
   }
   void* newItem = malloc(list->dataLen);
   if(newItem == NULL){
-    return;
+    return NULL;
   }
   memcpy(newItem, item, list->dataLen);
   node->data = newItem;
   addNode(list, node);
+  return newItem;
 }
 void printList(struct linkedList* list){
   struct node* curNode = list->first;

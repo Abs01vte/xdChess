@@ -19,19 +19,17 @@ bool initMoves(void){
   int value;
 
   // Function call to create regex
-  value = regcomp( &firstCharacter, "Q|K|N|B|R|a|b|c|d|e|f|g|h|O", 0);
-
-
+  value = regcomp(&firstCharacter, "Q|K|N|B|R|a|b|c|d|e|f|g|h|O", REG_EXTENDED);
 
   // Else for Compilation error
   if(value != 0) {
-      printf("Compilation error in first character regex\n");
+      fprintf(stderr, "Compilation error in first character regex\n");
       return false;
   }
 
-  value = regcomp(&numberMatcher, "[[:digit:]]", 0);
+  value = regcomp(&numberMatcher, "[[:digit:]]", REG_EXTENDED);
   if(value != 0) {
-      printf("Compilation error in number matcher regex\n");
+      fprintf(stderr, "Compilation error in number matcher regex\n");
       return false;
   }
   return true;
@@ -40,7 +38,8 @@ void quitMoves(void){
   regfree(&firstCharacter);
   regfree(&numberMatcher);
 }
-enum noteState getFirstPart(struct move* move, char c){
+
+enum noteState getFirstPart(struct move* move, char c) {
   if(islower(c) != 0){
     move->piece = PAWN;
     switch(c){
@@ -69,7 +68,7 @@ enum noteState getFirstPart(struct move* move, char c){
         move->file = H;
       break;
       default:
-        printf("Error finding pawn move %c\n", c);
+          fprintf(stderr, "Error finding pawn move %c (%d)\n", c, (int)c);
         return ERRORSTATE;
       break;
     }
@@ -79,7 +78,7 @@ enum noteState getFirstPart(struct move* move, char c){
     move->rank = -1;
     return CASTLESTATE;
   }
-  else{
+  else if (isupper(c) != 0){
     switch(c){
       case 'Q':
         move->piece = QUEEN;
@@ -97,7 +96,7 @@ enum noteState getFirstPart(struct move* move, char c){
         move->piece = ROOK;
       break;
       default:
-        printf("Error could not find piece %c\n", c);
+          fprintf(stderr, "Error could not find piece %c (%d)\n", c, (int)c);
         return ERRORSTATE;
       break;
     }
@@ -110,30 +109,44 @@ enum noteState getFirstPart(struct move* move, char c){
 struct linkedList* getList(FILE* file1, FILE* file2){
   char buff[512];
   enum noteState state = IDLESTATE;
-  struct move move = (struct move){.player = WHITE, .piece = EMPTY, .rank = 0, .file = 'A'};
+  struct move move = (struct move){.player = WHITE, .piece = EMPTY, .rank = 0,
+      .file = A};
   struct linkedList* list = makeList(sizeof(struct move));
   if(list == NULL){
     return NULL;
   }
-  for(char* retVal = fgets(buff, sizeof(buff), file1); retVal != NULL; retVal = fgets(buff, sizeof(buff), file1)){
-    size_t buffLen = sizeof(buff);
+  // Extremely simple algebraic chess notation parser.
+  for(char* retVal = fgets(buff, sizeof(buff), file1); retVal != NULL;
+      retVal = fgets(buff, sizeof(buff), file1)){
+    size_t buffLen = strnlen(buff, sizeof(buff));
+    if(buff[buffLen - 1] == '\n')
+        buffLen--;
     for(size_t i = 0; i < buffLen; i++){
-      if(state == IDLESTATE){
-        if(regexec(&firstCharacter, buff+i, 0, NULL, 0) == 0){
-          state = getFirstPart(&move, buff[i]);
+        // Match the next character to a regular expression.
+        // This is very simple due to all chess information being only one
+        // character in length.
+
+        // Constant string that represents the current character.
+        const char curStr[] = {buff[i], '\0'};
+        switch(state) {
+        case IDLESTATE:
+            if(regexec(&firstCharacter, curStr, 0, NULL, 0) == 0){
+                state = getFirstPart(&move, buff[i]);
+            }
+            break;
+        case PAWNSTATE:
+            if(regexec(&numberMatcher, curStr, 0, NULL, 0) == 0){
+                move.rank = buff[i]-'0';
+                addList(&move, list);
+                state = IDLESTATE;
+            }
+            break;
+        default:
+            fprintf(stderr, "UNKNOWN STATE: %d\n", state);
+        case ERRORSTATE:
+            state = IDLESTATE;
+            break;
         }
-      }
-      else if (state == PAWNSTATE){
-        if(regexec(&numberMatcher, buff+i, 0, NULL, 0) == 0){
-          move.rank = buff[i]-48;
-          addList(&move, list);
-          state = IDLESTATE;
-        }
-      }
-      if(state == ERRORSTATE){
-        state = IDLESTATE;
-        continue;
-      }
     }
   }
   return list;
