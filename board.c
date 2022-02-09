@@ -66,24 +66,39 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
     return NULL;
   }
   *newBoard = *board;
-  newBoard->tiles[move->file - 'A'][move->rank].player = move->player;
-  newBoard->tiles[move->file - 'A'][move->rank].piece = move->piece;
+  // the new board has the new move added to the board, piece and side
+  newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
+  newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
+  // appending the piece that moved to an empty space where it came from
   switch (move->piece) {
   case PAWN: {
-    for (int i = 0; i < 8; i++) {
-      if (newBoard->tiles[move->file - 'A'][i].piece ==
-          newBoard->tiles[move->file - 'A'][move->rank - 1].piece) {
-        if (newBoard->tiles[move->file - 'A'][i].player ==
-            newBoard->tiles[move->file - 'A'][move->rank - 1].player) {
-          newBoard->tiles[move->file - 'A'][i].piece = EMPTY;
-          newBoard->tiles[move->file - 'A'][i].player = NONE;
-        }
-
-      } else {
-        continue;
+    if (newBoard->tiles[move->rank][move->file - 'A'].player == WHITE) {
+      if (newBoard->tiles[move->rank - 2][move->file - 'A'].piece ==
+          newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        newBoard->tiles[move->rank - 2][move->file - 'A'].piece = EMPTY;
+        newBoard->tiles[move->rank - 2][move->file - 'A'].player = NONE;
+      }
+      if (newBoard->tiles[move->rank - 1][move->file - 'A'].piece ==
+          newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        newBoard->tiles[move->rank - 1][move->file - 'A'].piece = EMPTY;
+        newBoard->tiles[move->rank - 1][move->file - 'A'].player = NONE;
       }
     }
-  } break;
+    if (newBoard->tiles[move->rank][move->file - 'A'].player == BLACK) {
+      if (newBoard->tiles[move->rank][move->file - 'A'].player == BLACK) {
+        if (newBoard->tiles[move->rank + 2][move->file - 'A'].piece ==
+            newBoard->tiles[move->rank][move->file - 'A'].piece) {
+          newBoard->tiles[move->rank + 2][move->file - 'A'].piece = EMPTY;
+          newBoard->tiles[move->rank + 2][move->file - 'A'].player = NONE;
+        }
+        if (newBoard->tiles[move->rank + 1][move->file - 'A'].piece ==
+            newBoard->tiles[move->rank][move->file - 'A'].piece) {
+          newBoard->tiles[move->rank + 1][move->file - 'A'].piece = EMPTY;
+          newBoard->tiles[move->rank + 1][move->file - 'A'].player = NONE;
+        }
+      }
+    }
+  }
   }
   return newBoard;
 }

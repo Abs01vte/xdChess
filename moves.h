@@ -28,6 +28,7 @@ struct move {
 
 struct linkedList *getList(FILE *file1, FILE *file2);
 bool initMoves(void);
+
 void quitMoves(void);
 
 #endif

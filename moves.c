@@ -139,7 +139,7 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
         break;
       case PAWNSTATE:
         if (regexec(&numberMatcher, curStr, 0, NULL, 0) == 0) {
-          move.rank = buff[i] - '0';
+          move.rank = buff[i] - '1';
           addList(&move, list);
           state = IDLESTATE;
           move.player = move.player == WHITE ? BLACK : WHITE;
