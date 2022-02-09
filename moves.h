@@ -12,7 +12,8 @@ enum file {
   E = 'E',
   F = 'F',
   G = 'G',
-  H = 'H'
+  H = 'H',
+  FILELESS
 };
 struct move {
   // Player is the player that makes the move.
