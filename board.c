@@ -66,12 +66,12 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
     return NULL;
   }
   *newBoard = *board;
-  // the new board has the new move added to the board, piece and side
-  newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
-  newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
   // appending the piece that moved to an empty space where it came from
   switch (move->piece) {
   case PAWN: {
+    // the new board has the new move added to the board, piece and side
+    newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
+    newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
     if (newBoard->tiles[move->rank][move->file - 'A'].player == WHITE) {
       if (newBoard->tiles[move->rank - 2][move->file - 'A'].piece ==
           newBoard->tiles[move->rank][move->file - 'A'].piece) {
@@ -99,7 +99,122 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
       }
     }
   }
+  case KNIGHT:
+    // the new board has the new move added to the board, piece and side
+    newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
+    newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
+    // making sure that we remove a white knight where it was moved from
+    if (newBoard->tiles[move->rank][move->file - 'A'].player == WHITE) {
+      if (newBoard->tiles[move->rank - 2][move->file - 'B'].piece ==
+          newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        // checking if the old knight is two ranks down and one file right from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank - 2][move->file - 'B'].piece = EMPTY;
+        newBoard->tiles[move->rank - 2][move->file - 'B'].player = NONE;
+      } else if (newBoard->tiles[move->rank - 2][move->file - '@'].piece ==
+                 newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        // checking if the old knight is two ranks down and one file left from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank - 2][move->file - '@'].piece = EMPTY;
+        newBoard->tiles[move->rank - 2][move->file - '@'].player = NONE;
+      } else if (newBoard->tiles[move->rank + 2][move->file - 'B'].piece ==
+                 newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        // checking if the old knight is two ranks up and one file right from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank + 2][move->file - 'B'].piece = EMPTY;
+        newBoard->tiles[move->rank + 2][move->file - 'B'].player = NONE;
+      } else if (newBoard->tiles[move->rank + 2][move->file - '@'].piece ==
+                 newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        // checking if the old knight is two ranks up and one file left from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank + 2][move->file - '@'].piece = EMPTY;
+        newBoard->tiles[move->rank + 2][move->file - '@'].player = NONE;
+      } else if (newBoard->tiles[move->rank + 1][move->file - 'C'].piece ==
+                 newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        // checking if the old knight is one rank up and two files right from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank + 1][move->file - 'C'].piece = EMPTY;
+        newBoard->tiles[move->rank + 1][move->file - 'C'].player = NONE;
+      } else if (newBoard->tiles[move->rank + 1][move->file - '?'].piece ==
+                 newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        // checking if the old knight is one rank up and two files left from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank + 1][move->file - '?'].piece = EMPTY;
+        newBoard->tiles[move->rank + 1][move->file - '?'].player = NONE;
+      } else if (newBoard->tiles[move->rank - 1][move->file - 'C'].piece ==
+                 newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        // checking if the old knight is one rank down and two files right from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank - 1][move->file - 'C'].piece = EMPTY;
+        newBoard->tiles[move->rank - 1][move->file - 'C'].player = NONE;
+      } else if (newBoard->tiles[move->rank - 1][move->file - '?'].piece ==
+                 newBoard->tiles[move->rank][move->file - 'A'].piece) {
+        // checking if the old knight is one rank down and two files left from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank - 1][move->file - '?'].piece = EMPTY;
+        newBoard->tiles[move->rank - 1][move->file - '?'].player = NONE;
+      } else {
+        // fail statement
+        printf("Illegal move detected, or failure to see old knight");
+      }
+    }
   }
   return newBoard;
+}
+const char *getPieceString(enum piece piece) {
+  switch (piece) {
+  case QUEEN:
+    return "Queen";
+    break;
+  case KING:
+    return "King";
+    break;
+  case ROOK:
+    return "Rook";
+    break;
+  case KNIGHT:
+    return "Knight";
+    break;
+  case BISHOP:
+    return "Bishop";
+    break;
+  case PAWN:
+    return "Pawn";
+    break;
+  case EMPTY:
+    return "No piece";
+    break;
+  }
+  return "Invalid piece";
+}
+const char *getPlayerString(enum player player) {
+  switch (player) {
+  case WHITE:
+    return "White";
+    break;
+  case BLACK:
+    return "Black";
+    break;
+  case NONE:
+    return "No player";
+    break;
+  }
+  return "Invalid player";
 }
 void destroyBoard(struct board *board) { free(board); }

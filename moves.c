@@ -67,6 +67,10 @@ bool initMoves(void) {
   }
   return true;
 }
+void printMove(const struct move *move) {
+  printf("Playing move: %s %s %c %d\n", getPlayerString(move->player),
+         getPieceString(move->piece), (char)move->file, move->rank + 1);
+}
 void quitMoves(void) {
   regfree(&firstCharacter);
   regfree(&numberMatcher);
@@ -113,7 +117,7 @@ enum noteState getFirstPart(struct move *move, char c) {
   } else if (c == 'O') {
     move->rank = -1;
     return CASTLESTATE;
-  } else if (isupper(c) != 0) {
+  } else {
     switch (c) {
     case 'Q':
       move->piece = QUEEN;
@@ -176,6 +180,7 @@ enum noteState getSecondPart(struct move *move, char c) {
       return ERRORSTATE;
       break;
     }
+    return PIECESTATE;
   } else {
     switch (c) {
     case '1':
@@ -207,8 +212,9 @@ enum noteState getSecondPart(struct move *move, char c) {
       return ERRORSTATE;
       break;
     }
+    return PAWNSTATE;
   }
-  return ERRORSTATE;
+  return PIECESTATE;
 }
 enum noteState getThirdPart(struct move *move, char c) {
   if (islower(c) != 0) {
@@ -246,28 +252,28 @@ enum noteState getThirdPart(struct move *move, char c) {
   } else {
     switch (c) {
     case '1':
-      move->rank = 1;
+      move->rank = 0;
       break;
     case '2':
-      move->rank = 2;
+      move->rank = 1;
       break;
     case '3':
-      move->rank = 3;
+      move->rank = 2;
       break;
     case '4':
-      move->rank = 4;
+      move->rank = 3;
       break;
     case '5':
-      move->rank = 5;
+      move->rank = 4;
       break;
     case '6':
-      move->rank = 6;
+      move->rank = 5;
       break;
     case '7':
-      move->rank = 7;
+      move->rank = 6;
       break;
     case '8':
-      move->rank = 8;
+      move->rank = 7;
       break;
     case '+':
       printf("Check!\n");
@@ -285,6 +291,7 @@ enum noteState getThirdPart(struct move *move, char c) {
     }
   }
 }
+
 enum noteState getFourthPart(struct move *move, char c) {
   if (isupper(c) != 0) {
     switch (c) {
@@ -409,10 +416,11 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
                                .rank = 0,
                                .file = FILELESS};
         }
+        break;
       case PIECESTATE:
         if (regexec(&secondCharacter, curStr, 0, NULL, 0) == 0) {
           state = getSecondPart(&move, buff[i]);
-        } else if (move.file == FILELESS &&
+        } else if (move.file != FILELESS &&
                    regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
           state = getThirdPart(&move, buff[i]);
           addList(&move, list);

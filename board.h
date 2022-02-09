@@ -2,11 +2,15 @@
 #define BOARD_H
 struct move;
 enum piece {
-  EMPTY='-', PAWN='P', BISHOP='B', KNIGHT='N', ROOK='R', KING='K', QUEEN='Q'
+  EMPTY = '-',
+  PAWN = 'P',
+  BISHOP = 'B',
+  KNIGHT = 'N',
+  ROOK = 'R',
+  KING = 'K',
+  QUEEN = 'Q'
 };
-enum player {
-  NONE, WHITE, BLACK
-};
+enum player { NONE, WHITE, BLACK };
 struct squareTile {
   enum piece piece;
   enum player player;
@@ -14,8 +18,8 @@ struct squareTile {
 struct board {
   struct squareTile tiles[8][8];
 };
-void printBoard(struct board*);
-struct board* makeBoard(void);
+void printBoard(struct board *);
+struct board *makeBoard(void);
 /*
  * This takes in a board and creates a new one in order to return states
  * in so doing, going back a move. Doing this, you can go forwards
@@ -24,7 +28,9 @@ struct board* makeBoard(void);
  * board: is the chessboard, with the pieces in a certain state.
  * move: move that is applied to the board state.
  * return: the updated board state as a new malloc'd board. NULL on error.
-*/
-struct board* updateBoard(const struct board* board, const struct move* move);
-void destroyBoard(struct board*);
+ */
+struct board *updateBoard(const struct board *board, const struct move *move);
+const char *getPieceString(enum piece piece);
+const char *getPlayerString(enum player player);
+void destroyBoard(struct board *);
 #endif

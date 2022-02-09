@@ -19,23 +19,23 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301, USA.
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <limits.h>
-#include <errno.h>
 #include "board.h"
 #include "list.h"
 #include "moves.h"
+#include <errno.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // Move mode.
 enum moveMode {
-    // Alternate player moves from input (w->b->w->b...).
-    ALTERNATING,
-    // Split input down the middle, white gets first half, black second.
-    MIDDLE
+  // Alternate player moves from input (w->b->w->b...).
+  ALTERNATING,
+  // Split input down the middle, white gets first half, black second.
+  MIDDLE
 };
 
 // The move mode. Default to alternating.
@@ -45,9 +45,9 @@ size_t maxMoves = SIZE_MAX;
 // Maximum amount of bytes to read from a file before stopping.
 size_t maxBytes = SIZE_MAX;
 // First file input.
-FILE* file1 = NULL;
+FILE *file1 = NULL;
 // Second file input.
-FILE* file2 = NULL;
+FILE *file2 = NULL;
 
 // TODO return false on error.
 /*
@@ -55,47 +55,42 @@ FILE* file2 = NULL;
  *  argc: Size of the argument vector.
  *  argv: Argument vector.
  */
-void parseCMDArgs(int argc, const char * const *argv) {
-    //TODO: files with dashes
-    for(int i = 1; i < argc; i++) {
-        const char* curArg = argv[i];
-        if(curArg[0] == '-') {
-            // Check if just a -, meaning stdin.
-            if(curArg[1] == '\0') {
-                if(file1 == NULL) {
-                    file1 = stdin;
-                }
-                else if(file2 == NULL) {
-                    file2 = stdin;
-                }
-                else { // Error, both files already set.
-                    fprintf(stderr, "Error: given too many files. Exiting.\n");
-                }
-            }
+void parseCMDArgs(int argc, const char *const *argv) {
+  // TODO: files with dashes
+  for (int i = 1; i < argc; i++) {
+    const char *curArg = argv[i];
+    if (curArg[0] == '-') {
+      // Check if just a -, meaning stdin.
+      if (curArg[1] == '\0') {
+        if (file1 == NULL) {
+          file1 = stdin;
+        } else if (file2 == NULL) {
+          file2 = stdin;
+        } else { // Error, both files already set.
+          fprintf(stderr, "Error: given too many files. Exiting.\n");
         }
-        else {
-            if(file1 == NULL) {
-                file1 = fopen(curArg, "r");
-                if(file1 == NULL) {
-                    fprintf(stderr, "Error when opening %s:", curArg);
-                    perror(NULL);
-                }
-            }
-            else if(file2 == NULL) {
-                file2 = fopen(curArg, "r");
-                if(file2 == NULL) {
-                    fprintf(stderr, "Error when opening %s:", curArg);
-                    perror(NULL);
-                }
-            }
-            else { // Error, both files already set.
-                fprintf(stderr, "Error: given too many files. Exiting.\n");
-            }
+      }
+    } else {
+      if (file1 == NULL) {
+        file1 = fopen(curArg, "r");
+        if (file1 == NULL) {
+          fprintf(stderr, "Error when opening %s:", curArg);
+          perror(NULL);
         }
+      } else if (file2 == NULL) {
+        file2 = fopen(curArg, "r");
+        if (file2 == NULL) {
+          fprintf(stderr, "Error when opening %s:", curArg);
+          perror(NULL);
+        }
+      } else { // Error, both files already set.
+        fprintf(stderr, "Error: given too many files. Exiting.\n");
+      }
     }
-    if(file1 == NULL) {
-        file1=stdin;
-    }
+  }
+  if (file1 == NULL) {
+    file1 = stdin;
+  }
 }
 
 /*
@@ -104,28 +99,30 @@ void parseCMDArgs(int argc, const char * const *argv) {
  * argv: Argument vector.
  * return: 0 on success, 1 on initialization failure.
  */
-int main(int argc, const char * const *argv) {
-    parseCMDArgs(argc, argv);
-    struct board* board = makeBoard();
-    if(board == NULL){
-      perror("board");
-      return 1;
-    }
-    printBoard(board);
-    initMoves();
-    struct linkedList* list = getList(file1, file2);
-    printf("List size is %zu\n", list->size);
-    struct node* moveNode = list->first;
-    for(int i = 0; i < list->size; i++){
-      struct move* move = (struct move*)moveNode->data;
-      struct board* newBoard = updateBoard(board, move);
-      destroyBoard(board);
-      printBoard(newBoard);
-      board = newBoard;
-      moveNode = moveNode->next;
-    }
+int main(int argc, const char *const *argv) {
+  parseCMDArgs(argc, argv);
+  struct board *board = makeBoard();
+  if (board == NULL) {
+    perror("board");
+    return 1;
+  }
+  printBoard(board);
+  initMoves();
+  struct linkedList *list = getList(file1, file2);
+  printf("List size is %zu\n", list->size);
 
-    destroyList(list);
+  struct node *moveNode = list->first;
+  for (int i = 0; i < list->size; i++) {
+    struct move *move = (struct move *)moveNode->data;
+    struct board *newBoard = updateBoard(board, move);
     destroyBoard(board);
-    return 0;
+    printBoard(newBoard);
+    board = newBoard;
+    printMove(move);
+    moveNode = moveNode->next;
+  }
+
+  destroyList(list);
+  destroyBoard(board);
+  return 0;
 }
