@@ -67,9 +67,33 @@ bool initMoves(void) {
   }
   return true;
 }
+struct move *copyMove(const struct move *move) {
+  struct move *newMove = malloc(sizeof(*move));
+  memcpy(newMove, move, sizeof(*move));
+  if (newMove == NULL) {
+    return NULL;
+  }
+  return newMove;
+}
+bool legalMove(const struct move *move, const struct board *board) {
+  struct move *newMove = copyMove(move);
+  switch (move->piece) {
+  case PAWN:
+    if (newMove->player == WHITE) {
+      if (board->tiles[move->rank - 2][move->file - 'A'].piece ==
+          board->tiles[move->rank][move->file - 'A'].piece) {
+        if (move->rank - 2 == 1) {
+        }
+      }
+    }
+    if (newMove->player == BLACK) {
+    }
+  }
+}
 void printMove(const struct move *move) {
-  printf("Playing move: %s %s %c %d\n", getPlayerString(move->player),
-         getPieceString(move->piece), (char)move->file, move->rank + 1);
+  printf("Board after playing the move: %s %s %c %d\n\n",
+         getPlayerString(move->player), getPieceString(move->piece),
+         (char)move->file, move->rank + 1);
 }
 void quitMoves(void) {
   regfree(&firstCharacter);
@@ -250,7 +274,9 @@ enum noteState getThirdPart(struct move *move, char c) {
       break;
     }
   } else {
+
     switch (c) {
+
     case '1':
       move->rank = 0;
       break;
@@ -420,9 +446,10 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
       case PIECESTATE:
         if (regexec(&secondCharacter, curStr, 0, NULL, 0) == 0) {
           state = getSecondPart(&move, buff[i]);
-        } else if (move.file != FILELESS &&
-                   regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
-          state = getThirdPart(&move, buff[i]);
+          state = IDLESTATE;
+        }
+        if (regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
+          state = getThirdPart(&move, buff[i + 1]);
           addList(&move, list);
           state = IDLESTATE;
           move.player = move.player == WHITE ? BLACK : WHITE;
@@ -430,8 +457,8 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
                                .piece = EMPTY,
                                .rank = 0,
                                .file = FILELESS};
-
-        } else if (checkState && move.rank != 0 && move.file != FILELESS) {
+        }
+        if (checkState && move.rank != 0 && move.file != FILELESS) {
           // TODO: check
           addList(&move, list);
           state = IDLESTATE;

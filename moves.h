@@ -29,6 +29,7 @@ struct move {
 
 struct linkedList *getList(FILE *file1, FILE *file2);
 bool initMoves(void);
+bool legalMove(const struct move *move, const struct board *board);
 void printMove(const struct move *move);
 void quitMoves(void);
 
