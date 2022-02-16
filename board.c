@@ -109,24 +109,119 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
     }
     // making sure that we remove a white knight where it was moved from
     if (newBoard->tiles[move->rank][move->file - 'A'].player == WHITE) {
-      if (newBoard->tiles[move->rank - 2][move->file - 'B'].piece == KNIGHT) {
+      if (newBoard->tiles[move->rank - 2][move->file - 'B'].piece == KNIGHT &&
+          newBoard->tiles[move->rank - 2][move->file - 'B'].player ==
+              move->player) {
         // checking if the old knight is two ranks down and one file right from
         // the present position of the new move
         // on success: the spot matching the placement of the old knight is
         // returned to '-' on the board and the player to none
-        printf("it has seen the knight\n");
-        newBoard->tiles[move->rank][move->file - 'B'].piece = EMPTY;
-        newBoard->tiles[move->rank][move->file - 'B'].player = NONE;
+
+        newBoard->tiles[move->rank - 2][move->file - 'B'].piece = EMPTY;
+        newBoard->tiles[move->rank - 2][move->file - 'B'].player = NONE;
       }
-      if (newBoard->tiles[move->rank][move->file - '@'].piece == KNIGHT) {
+      if (newBoard->tiles[move->rank - 2][move->file - '@'].piece == KNIGHT &&
+          newBoard->tiles[move->rank - 2][move->file - '@'].player ==
+              move->player) {
         // checking if the old knight is two ranks down and one file left from
         // the present position of the new move
         // on success: the spot matching the placement of the old knight is
         // returned to '-' on the board and the player to none
-        newBoard->tiles[move->rank][move->file - '@'].piece = EMPTY;
-        newBoard->tiles[move->rank][move->file - '@'].player = NONE;
+
+        newBoard->tiles[move->rank - 2][move->file - '@'].piece = EMPTY;
+        newBoard->tiles[move->rank - 2][move->file - '@'].player = NONE;
       }
-      if (newBoard->tiles[move->rank + 2][move->file - 'B'].piece == KNIGHT) {
+      if (newBoard->tiles[move->rank + 2][move->file - 'B'].piece == KNIGHT &&
+          newBoard->tiles[move->rank + 2][move->file - 'B'].player ==
+              move->player) {
+        // checking if the old knight is two ranks up and one file right from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+
+        newBoard->tiles[move->rank + 2][move->file - 'B'].piece = EMPTY;
+        newBoard->tiles[move->rank + 2][move->file - 'B'].player = NONE;
+      }
+      if (newBoard->tiles[move->rank + 2][move->file - '@'].piece == KNIGHT &&
+          newBoard->tiles[move->rank + 2][move->file - '@'].player ==
+              move->player) {
+        // checking if the old knight is two ranks up and one file left from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+
+        newBoard->tiles[move->rank + 2][move->file - '@'].piece = EMPTY;
+        newBoard->tiles[move->rank + 2][move->file - '@'].player = NONE;
+      }
+      if (newBoard->tiles[move->rank + 1][move->file - 'C'].piece == KNIGHT &&
+          newBoard->tiles[move->rank + 1][move->file - 'C'].player ==
+              move->player) {
+        // checking if the old knight is one rank up and two files right from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+
+        newBoard->tiles[move->rank + 1][move->file - 'C'].piece = EMPTY;
+        newBoard->tiles[move->rank + 1][move->file - 'C'].player = NONE;
+      }
+      if (newBoard->tiles[move->rank + 1][move->file - '?'].piece == KNIGHT &&
+          newBoard->tiles[move->rank + 1][move->file - '?'].player ==
+              move->player) {
+        // checking if the old knight is one rank up and two files left from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+
+        newBoard->tiles[move->rank + 1][move->file - '?'].piece = EMPTY;
+        newBoard->tiles[move->rank + 1][move->file - '?'].player = NONE;
+      }
+      if (newBoard->tiles[move->rank - 1][move->file - 'C'].piece == KNIGHT &&
+          newBoard->tiles[move->rank - 1][move->file - 'C'].player ==
+              move->player) {
+        // checking if the old knight is one rank down and two files right from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+
+        newBoard->tiles[move->rank - 1][move->file - 'C'].piece = EMPTY;
+        newBoard->tiles[move->rank - 1][move->file - 'C'].player = NONE;
+      }
+      if (newBoard->tiles[move->rank - 1][move->file - '?'].piece == KNIGHT &&
+          newBoard->tiles[move->rank - 1][move->file - '?'].player ==
+              move->player) {
+        // checking if the old knight is one rank down and two files left from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+
+        newBoard->tiles[move->rank - 1][move->file - '?'].piece = EMPTY;
+        newBoard->tiles[move->rank - 1][move->file - '?'].player = NONE;
+      }
+    }
+    if (newBoard->tiles[move->rank][move->file - 'A'].player == BLACK) {
+      if (newBoard->tiles[move->rank - 2][move->file - 'B'].piece == KNIGHT &&
+          newBoard->tiles[move->rank - 2][move->file - 'B'].player ==
+              move->player) {
+        // checking if the old knight is two ranks down and one file right from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank - 2][move->file - 'B'].piece = EMPTY;
+        newBoard->tiles[move->rank - 2][move->file - 'B'].player = NONE;
+      }
+      if (newBoard->tiles[move->rank - 2][move->file - '@'].piece == KNIGHT &&
+          newBoard->tiles[move->rank - 2][move->file - '@'].player ==
+              move->player) {
+        // checking if the old knight is two ranks down and one file left from
+        // the present position of the new move
+        // on success: the spot matching the placement of the old knight is
+        // returned to '-' on the board and the player to none
+        newBoard->tiles[move->rank - 2][move->file - '@'].piece = EMPTY;
+        newBoard->tiles[move->rank - 2][move->file - '@'].player = NONE;
+      }
+      if (newBoard->tiles[move->rank + 2][move->file - 'B'].piece == KNIGHT &&
+          newBoard->tiles[move->rank + 2][move->file - 'B'].player ==
+              move->player) {
         // checking if the old knight is two ranks up and one file right from
         // the present position of the new move
         // on success: the spot matching the placement of the old knight is
@@ -134,16 +229,19 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
         newBoard->tiles[move->rank + 2][move->file - 'B'].piece = EMPTY;
         newBoard->tiles[move->rank + 2][move->file - 'B'].player = NONE;
       }
-      if (newBoard->tiles[move->rank + 2][move->file - '@'].piece == KNIGHT) {
+      if (newBoard->tiles[move->rank + 2][move->file - '@'].piece == KNIGHT &&
+          newBoard->tiles[move->rank + 2][move->file - '@'].player ==
+              move->player) {
         // checking if the old knight is two ranks up and one file left from
         // the present position of the new move
         // on success: the spot matching the placement of the old knight is
         // returned to '-' on the board and the player to none
-        printf("it has seen the knight\n");
         newBoard->tiles[move->rank + 2][move->file - '@'].piece = EMPTY;
         newBoard->tiles[move->rank + 2][move->file - '@'].player = NONE;
       }
-      if (newBoard->tiles[move->rank + 1][move->file - 'C'].piece == KNIGHT) {
+      if (newBoard->tiles[move->rank + 1][move->file - 'C'].piece == KNIGHT &&
+          newBoard->tiles[move->rank + 1][move->file - 'C'].player ==
+              move->player) {
         // checking if the old knight is one rank up and two files right from
         // the present position of the new move
         // on success: the spot matching the placement of the old knight is
@@ -151,7 +249,9 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
         newBoard->tiles[move->rank + 1][move->file - 'C'].piece = EMPTY;
         newBoard->tiles[move->rank + 1][move->file - 'C'].player = NONE;
       }
-      if (newBoard->tiles[move->rank + 1][move->file - '?'].piece == KNIGHT) {
+      if (newBoard->tiles[move->rank + 1][move->file - '?'].piece == KNIGHT &&
+          newBoard->tiles[move->rank + 1][move->file - '?'].player ==
+              move->player) {
         // checking if the old knight is one rank up and two files left from
         // the present position of the new move
         // on success: the spot matching the placement of the old knight is
@@ -159,7 +259,9 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
         newBoard->tiles[move->rank + 1][move->file - '?'].piece = EMPTY;
         newBoard->tiles[move->rank + 1][move->file - '?'].player = NONE;
       }
-      if (newBoard->tiles[move->rank - 1][move->file - 'C'].piece == KNIGHT) {
+      if (newBoard->tiles[move->rank - 1][move->file - 'C'].piece == KNIGHT &&
+          newBoard->tiles[move->rank - 1][move->file - 'C'].player ==
+              move->player) {
         // checking if the old knight is one rank down and two files right from
         // the present position of the new move
         // on success: the spot matching the placement of the old knight is
@@ -167,7 +269,9 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
         newBoard->tiles[move->rank - 1][move->file - 'C'].piece = EMPTY;
         newBoard->tiles[move->rank - 1][move->file - 'C'].player = NONE;
       }
-      if (newBoard->tiles[move->rank - 1][move->file - '?'].piece == KNIGHT) {
+      if (newBoard->tiles[move->rank - 1][move->file - '?'].piece == KNIGHT &&
+          newBoard->tiles[move->rank - 1][move->file - '?'].player ==
+              move->player) {
         // checking if the old knight is one rank down and two files left from
         // the present position of the new move
         // on success: the spot matching the placement of the old knight is
