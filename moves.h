@@ -15,6 +15,12 @@ enum file {
   H = 'H',
   FILELESS
 };
+#define CASTLE 1
+#define TAKES 2
+#define PROMOTION 4
+#define ENPASSANT 8
+#define CHECK 16
+#define CHECKMATE 32
 struct move {
   // Player is the player that makes the move.
   enum player player;
@@ -22,9 +28,10 @@ struct move {
   enum piece piece;
   // File is the letter, or vertical groupings on the board.
   enum file file;
-  // Rank defines the horizontal groupings on the board. Negative one means
-  // castling.
+  // Rank defines the horizontal groupings on the board
   int rank;
+  // Special cases for a particular move
+  unsigned flags;
 };
 
 struct linkedList *getList(FILE *file1, FILE *file2);

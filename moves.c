@@ -66,7 +66,7 @@ bool initMoves(void) {
     fprintf(stderr, "Compilation error in promotion character regex\n");
     return false;
   }
-  value = regcomp(&castle, "O", REG_EXTENDED);
+  value = regcomp(&castle, "O|-", REG_EXTENDED);
   if (value != 0) {
     fprintf(stderr, "Compilation error in castle character regex\n");
     return false;
@@ -539,11 +539,16 @@ enum noteState getPromotion(struct move *move, char c) {
   }
   return PROMOTIONSTATE;
 }
+#define RESET_MOVE                                                             \
+  state = IDLESTATE;                                                           \
+  move.player = move.player == WHITE ? BLACK : WHITE;                          \
+  move = (struct move){                                                        \
+      .player = move.player, .piece = EMPTY, .rank = 0, .file = FILELESS};
 struct linkedList *getList(FILE *file1, FILE *file2) {
   char buff[512];
   enum noteState state = IDLESTATE;
   struct move move = (struct move){
-      .player = WHITE, .piece = EMPTY, .rank = 0, .file = FILELESS};
+      .player = WHITE, .piece = EMPTY, .rank = 0, .file = FILELESS, .flags = 0};
   struct linkedList *list = makeList(sizeof(struct move));
   if (list == NULL) {
     return NULL;
@@ -567,18 +572,23 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
         if (regexec(&firstCharacter, curStr, 0, NULL, 0) == 0) {
           state = getFirstPart(&move, buff[i]);
         }
+        if (regexec(&castle, curStr, 0, NULL, 0) == 0) {
+          state = CASTLESTATE;
+        }
         break;
       case PAWNSTATE:
         if (regexec(&numberMatcher, curStr, 0, NULL, 0) == 0) {
           move.rank = buff[i] - '1';
           addList(&move, list);
-          state = IDLESTATE;
-          move.player = move.player == WHITE ? BLACK : WHITE;
-          move = (struct move){.player = move.player,
-                               .piece = EMPTY,
-                               .rank = 0,
-                               .file = FILELESS};
         }
+        if (regexec(&secondCharacter, curStr, 0, NULL, 0) == 0) {
+          if (buff[i + 1] == 'x') {
+            state = TAKESTATE;
+            i++;
+            break;
+          }
+        }
+        RESET_MOVE;
         break;
       case PIECESTATE:
         if (regexec(&secondCharacter, curStr, 0, NULL, 0) == 0) {
@@ -588,22 +598,13 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
         if (regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
           state = getThirdPart(&move, buff[i + 1]);
           addList(&move, list);
-          state = IDLESTATE;
-          move.player = move.player == WHITE ? BLACK : WHITE;
-          move = (struct move){.player = move.player,
-                               .piece = EMPTY,
-                               .rank = 0,
-                               .file = FILELESS};
+          RESET_MOVE;
+          i++;
         }
         if (checkState && move.rank != 0 && move.file != FILELESS) {
           // TODO: check
           addList(&move, list);
-          state = IDLESTATE;
-          move.player = move.player == WHITE ? BLACK : WHITE;
-          move = (struct move){.player = move.player,
-                               .piece = EMPTY,
-                               .rank = 0,
-                               .file = FILELESS};
+          RESET_MOVE;
         }
         // TODO: Takes, disambiguation
         break;
@@ -613,7 +614,27 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
         }
         break;
       case CASTLESTATE:
-        addList("O-O", list);
+        move.flags = CASTLE;
+        addList(&move, list);
+        RESET_MOVE;
+        break;
+      case TAKESTATE:
+        if (move.piece == PAWN) {
+          move.rank = (char)buff[i + 2];
+          move.file = (char)buff[i + 1];
+          move.flags = TAKES;
+          RESET_MOVE;
+          i += 2;
+          break;
+        }
+        if (move.piece != PAWN && move.piece != EMPTY) {
+          move.rank = (char)buff[i + 2];
+          move.file = (char)buff[i + 1];
+          move.flags = TAKES;
+          RESET_MOVE;
+          break;
+        }
+        break;
       default:
         fprintf(stderr, "UNKNOWN STATE: %d\n", state);
       case ERRORSTATE:
