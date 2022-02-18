@@ -153,6 +153,7 @@ bool rookCollision(const struct board *board, const struct move *move) {
 
   return false;
 }
+
 struct board *updateBoard(const struct board *board, const struct move *move) {
   struct board *newBoard = makeBoard();
   if (newBoard == NULL || board == NULL) {
@@ -174,14 +175,22 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
               newBoard->tiles[move->rank][move->file - 'A'].player) {
         newBoard->tiles[move->rank - 2][move->file - 'A'].piece = EMPTY;
         newBoard->tiles[move->rank - 2][move->file - 'A'].player = NONE;
-      }
-      if (newBoard->tiles[move->rank - 1][move->file - 'A'].piece ==
-              newBoard->tiles[move->rank][move->file - 'A'].piece &&
-          newBoard->tiles[move->rank - 1][move->file - 'A'].piece ==
-              newBoard->tiles[move->rank][move->file - 'A'].player) {
+        break;
+      } else if (newBoard->tiles[move->rank - 1][move->file - 'A'].piece ==
+                     newBoard->tiles[move->rank][move->file - 'A'].piece &&
+                 newBoard->tiles[move->rank - 1][move->file - 'A'].player ==
+                     newBoard->tiles[move->rank][move->file - 'A'].player) {
+        printf("pawn removed\n");
         newBoard->tiles[move->rank - 1][move->file - 'A'].piece = EMPTY;
         newBoard->tiles[move->rank - 1][move->file - 'A'].player = NONE;
+        break;
       }
+      printf("Move rank - 1 is: %d\n", move->rank - 1);
+      printf(
+          "when I play d3 the d2 space has: %s and the d3 space has: %s\n",
+          getPieceString(
+              newBoard->tiles[move->rank - 1][move->file - 'A'].piece),
+          getPieceString(newBoard->tiles[move->rank][move->file - 'A'].piece));
     }
     if (move->player == BLACK) {
       if (newBoard->tiles[move->rank + 2][move->file - 'A'].piece ==
@@ -190,14 +199,23 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
               newBoard->tiles[move->rank][move->file - 'A'].player) {
         newBoard->tiles[move->rank + 2][move->file - 'A'].piece = EMPTY;
         newBoard->tiles[move->rank + 2][move->file - 'A'].player = NONE;
+        break;
       }
       if (newBoard->tiles[move->rank + 1][move->file - 'A'].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+              newBoard->tiles[move->rank][move->file - 'A'].piece &&
           newBoard->tiles[move->rank + 1][move->file - 'A'].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+              newBoard->tiles[move->rank][move->file - 'A'].player) {
+        printf("pawn removed\n");
         newBoard->tiles[move->rank + 1][move->file - 'A'].piece = EMPTY;
         newBoard->tiles[move->rank + 1][move->file - 'A'].player = NONE;
+        break;
       }
+      printf("Move rank + 1 is: %d\n", move->rank + 1);
+      printf(
+          "when I play d6 the d7 space has: %s and the d6 space has: %s\n",
+          getPieceString(
+              newBoard->tiles[move->rank + 1][move->file - 'A'].piece),
+          getPieceString(newBoard->tiles[move->rank][move->file - 'A'].piece));
     }
   } break;
   case KNIGHT:
@@ -382,53 +400,93 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
 
     break;
   case BISHOP:
+    // the new board has the new move added to the board, piece and side
+    newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
+    newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
+    // first, checking for the legality of the move
+    if (legalMove(move, board)) {
+      int file = move->file - 'A';
+      for (int i = 1; i < 8; i++) {
+        if (newBoard->tiles[move->rank - i][file - i].piece ==
+                newBoard->tiles[move->rank][move->file - 'A'].piece &&
+            newBoard->tiles[move->rank - i][file - i].player ==
+                newBoard->tiles[move->rank][move->file - 'A'].player) {
+          newBoard->tiles[move->rank - i][file - i].piece = EMPTY;
+          newBoard->tiles[move->rank - i][file - i].player = NONE;
+        }
+        if (newBoard->tiles[move->rank + i][file - i].piece ==
+                newBoard->tiles[move->rank][move->file - 'A'].piece &&
+            newBoard->tiles[move->rank + i][file - i].player ==
+                newBoard->tiles[move->rank][move->file - 'A'].player) {
+          newBoard->tiles[move->rank + i][file - i].piece = EMPTY;
+          newBoard->tiles[move->rank + i][file - i].player = NONE;
+        }
+        if (newBoard->tiles[move->rank - i][file + i].piece ==
+                newBoard->tiles[move->rank][move->file - 'A'].piece &&
+            newBoard->tiles[move->rank - i][file + i].player ==
+                newBoard->tiles[move->rank][move->file - 'A'].player) {
+          newBoard->tiles[move->rank - i][file + i].piece = EMPTY;
+          newBoard->tiles[move->rank - i][file + i].player = NONE;
+        }
+        if (newBoard->tiles[move->rank + i][file + i].piece ==
+                newBoard->tiles[move->rank][move->file - 'A'].piece &&
+            newBoard->tiles[move->rank + i][file + i].player ==
+                newBoard->tiles[move->rank][move->file - 'A'].player) {
+          newBoard->tiles[move->rank + i][file + i].piece = EMPTY;
+          newBoard->tiles[move->rank + i][file + i].player = NONE;
+        }
+      }
+    }
     break;
   case ROOK:
     // the new board has the new move added to the board, piece and side
     newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
     newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
-    // ensuring that a collison on the file or rank that the rook
-    // moves on does not happen
-    if (!rookCollision(newBoard, move)) {
-      for (int i = 0; i < 8; i++) {
-        if (newBoard->tiles[move->rank - i][move->file - 'A'].piece ==
-                newBoard->tiles[move->rank][move->file - 'A'].piece &&
-            newBoard->tiles[move->rank - i][move->file - 'A'].player ==
-                newBoard->tiles[move->rank][move->file - 'A'].player) {
-          newBoard->tiles[move->rank - i][move->file - 'A'].player = NONE;
-          newBoard->tiles[move->rank - i][move->file - 'A'].piece = EMPTY;
-          break;
+    // first, checking for the legality of the move
+    if (legalMove(move, board)) {
+      // ensuring that a collison on the file or rank that the rook
+      // moves on does not happen
+      if (!rookCollision(newBoard, move)) {
+        for (int i = 0; i < 8; i++) {
+          if (newBoard->tiles[move->rank - i][move->file - 'A'].piece ==
+                  newBoard->tiles[move->rank][move->file - 'A'].piece &&
+              newBoard->tiles[move->rank - i][move->file - 'A'].player ==
+                  newBoard->tiles[move->rank][move->file - 'A'].player) {
+            newBoard->tiles[move->rank - i][move->file - 'A'].player = NONE;
+            newBoard->tiles[move->rank - i][move->file - 'A'].piece = EMPTY;
+            break;
+          }
+          if (newBoard->tiles[move->rank + i][move->file - 'A'].piece ==
+                  newBoard->tiles[move->rank][move->file - 'A'].piece &&
+              newBoard->tiles[move->rank + i][move->file - 'A'].player ==
+                  newBoard->tiles[move->rank][move->file - 'A'].player) {
+            newBoard->tiles[move->rank + i][move->file - 'A'].player = NONE;
+            newBoard->tiles[move->rank + i][move->file - 'A'].piece = EMPTY;
+            break;
+          }
+          if (newBoard->tiles[move->rank][move->file - 'A' - i].piece ==
+                  newBoard->tiles[move->rank][move->file - 'A'].piece &&
+              newBoard->tiles[move->rank][move->file - 'A' - i].player ==
+                  newBoard->tiles[move->rank][move->file - 'A'].player) {
+            newBoard->tiles[move->rank][move->file - 'A' - i].player = NONE;
+            newBoard->tiles[move->rank][move->file - 'A' - i].piece = EMPTY;
+            break;
+          }
+          if (newBoard->tiles[move->rank][move->file - 'A' + i].piece ==
+                  newBoard->tiles[move->rank][move->file - 'A'].piece &&
+              newBoard->tiles[move->rank][move->file - 'A' + i].player ==
+                  newBoard->tiles[move->rank][move->file - 'A'].player) {
+            newBoard->tiles[move->rank][move->file - 'A' + i].player = NONE;
+            newBoard->tiles[move->rank][move->file - 'A' + i].piece = EMPTY;
+            break;
+          }
         }
-        if (newBoard->tiles[move->rank + i][move->file - 'A'].piece ==
-                newBoard->tiles[move->rank][move->file - 'A'].piece &&
-            newBoard->tiles[move->rank + i][move->file - 'A'].player ==
-                newBoard->tiles[move->rank][move->file - 'A'].player) {
-          newBoard->tiles[move->rank + i][move->file - 'A'].player = NONE;
-          newBoard->tiles[move->rank + i][move->file - 'A'].piece = EMPTY;
-          break;
-        }
-        if (newBoard->tiles[move->rank][move->file - 'A' - i].piece ==
-                newBoard->tiles[move->rank][move->file - 'A'].piece &&
-            newBoard->tiles[move->rank][move->file - 'A' - i].player ==
-                newBoard->tiles[move->rank][move->file - 'A'].player) {
-          newBoard->tiles[move->rank][move->file - 'A' - i].player = NONE;
-          newBoard->tiles[move->rank][move->file - 'A' - i].piece = EMPTY;
-          break;
-        }
-        if (newBoard->tiles[move->rank][move->file - 'A' + i].piece ==
-                newBoard->tiles[move->rank][move->file - 'A'].piece &&
-            newBoard->tiles[move->rank][move->file - 'A' + i].player ==
-                newBoard->tiles[move->rank][move->file - 'A'].player) {
-          newBoard->tiles[move->rank][move->file - 'A' + i].player = NONE;
-          newBoard->tiles[move->rank][move->file - 'A' + i].piece = EMPTY;
-          break;
-        }
+      } else {
+        printf("Failure to detect rook in move: %s %s %c %d\n\n",
+               getPlayerString(move->player), getPieceString(move->piece),
+               (char)move->file, move->rank + 1);
+        break;
       }
-    } else {
-      printf("Failure to detect rook in move: %s %s %c %d\n\n",
-             getPlayerString(move->player), getPieceString(move->piece),
-             (char)move->file, move->rank + 1);
-      break;
     }
     break;
   default:

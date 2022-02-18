@@ -14,6 +14,7 @@ regex_t secondCharacter;
 regex_t thirdCharacter;
 regex_t fourthCharacter;
 regex_t promotion;
+regex_t castle;
 
 enum noteState {
   PAWNSTATE,
@@ -29,7 +30,7 @@ bool initMoves(void) {
   int value;
 
   // Function call to create regex
-  value = regcomp(&firstCharacter, "Q|K|N|B|R|a|b|c|d|e|f|g|h|O", REG_EXTENDED);
+  value = regcomp(&firstCharacter, "Q|K|N|B|R|a|b|c|d|e|f|g|h", REG_EXTENDED);
 
   // Else for Compilation error
   if (value != 0) {
@@ -63,6 +64,11 @@ bool initMoves(void) {
   value = regcomp(&promotion, "Q|R|N|B", REG_EXTENDED);
   if (value != 0) {
     fprintf(stderr, "Compilation error in promotion character regex\n");
+    return false;
+  }
+  value = regcomp(&castle, "O", REG_EXTENDED);
+  if (value != 0) {
+    fprintf(stderr, "Compilation error in castle character regex\n");
     return false;
   }
   return true;
@@ -162,8 +168,36 @@ bool legalMove(const struct move *move, const struct board *board) {
       return true;
     }
     break;
+  case BISHOP:
+    int file = move->file - 'A';
+    for (int i = 0; i < 8; i++) {
+      if (board->tiles[move->rank - i][file - i].piece ==
+              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank - i][file - i].player ==
+              board->tiles[move->rank][move->file - 'A'].player) {
+        return true;
+      }
+      if (board->tiles[move->rank + i][file - i].piece ==
+              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank + i][file - i].player ==
+              board->tiles[move->rank][move->file - 'A'].player) {
+        return true;
+      }
+      if (board->tiles[move->rank - i][file + i].piece ==
+              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank - i][file + i].player ==
+              board->tiles[move->rank][move->file - 'A'].player) {
+        return true;
+      }
+      if (board->tiles[move->rank + i][file + i].piece ==
+              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank + i][file + i].player ==
+              board->tiles[move->rank][move->file - 'A'].player) {
+        return true;
+      }
+    }
+    break;
   case ROOK:
-
     for (int i = 0; i < 8; i++) {
       if (board->tiles[move->rank - i][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
@@ -243,7 +277,6 @@ enum noteState getFirstPart(struct move *move, char c) {
     }
     return PAWNSTATE;
   } else if (c == 'O') {
-    move->rank = -1;
     return CASTLESTATE;
   } else {
     switch (c) {
@@ -579,7 +612,8 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
           move.piece = buff[i];
         }
         break;
-
+      case CASTLESTATE:
+        addList("O-O", list);
       default:
         fprintf(stderr, "UNKNOWN STATE: %d\n", state);
       case ERRORSTATE:
