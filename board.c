@@ -185,12 +185,6 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
         newBoard->tiles[move->rank - 1][move->file - 'A'].player = NONE;
         break;
       }
-      printf("Move rank - 1 is: %d\n", move->rank - 1);
-      printf(
-          "when I play d3 the d2 space has: %s and the d3 space has: %s\n",
-          getPieceString(
-              newBoard->tiles[move->rank - 1][move->file - 'A'].piece),
-          getPieceString(newBoard->tiles[move->rank][move->file - 'A'].piece));
     }
     if (move->player == BLACK) {
       if (newBoard->tiles[move->rank + 2][move->file - 'A'].piece ==
@@ -210,12 +204,6 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
         newBoard->tiles[move->rank + 1][move->file - 'A'].player = NONE;
         break;
       }
-      printf("Move rank + 1 is: %d\n", move->rank + 1);
-      printf(
-          "when I play d6 the d7 space has: %s and the d6 space has: %s\n",
-          getPieceString(
-              newBoard->tiles[move->rank + 1][move->file - 'A'].piece),
-          getPieceString(newBoard->tiles[move->rank][move->file - 'A'].piece));
     }
   } break;
   case KNIGHT:

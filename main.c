@@ -114,6 +114,9 @@ int main(int argc, const char *const *argv) {
   for (int i = 0; i < list->size; i++) {
     struct move *move = (struct move *)moveNode->data;
     struct board *newBoard = updateBoard(board, move);
+    if (newBoard == NULL) {
+      break;
+    }
     destroyBoard(board);
     printBoard(newBoard);
     board = newBoard;
