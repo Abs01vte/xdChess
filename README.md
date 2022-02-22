@@ -13,12 +13,27 @@ Example use:
 The above line will call xdcess with two files as input: file1 will generate moves for white, and
 file2 will generate moves for black.
 
+Example input for two files:
+File 1:
+`e4
+Nf3
+Bc4`
+File 2:
+`e5
+Nc6
+Bc5`
+
 `xdChess file1`
 
 Call xdchess with one file as input. Both white and black's moves are derived
 from this file.
 
 You can also call xdChess with no input, in which case it read from stdin.
+
+Example input for one file:
+`e4 e5
+Nf3 Nc6
+Bc4 Bc5`
 
 Example:
 
@@ -64,4 +79,3 @@ Flags that take arguments use the `-f=arg` syntax.
 Example:
 
 `xdchess -x=420`
-

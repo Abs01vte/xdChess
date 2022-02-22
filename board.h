@@ -30,6 +30,7 @@ struct board *makeBoard(void);
  * return: the updated board state as a new malloc'd board. NULL on error.
  */
 struct board *updateBoard(const struct board *board, const struct move *move);
+struct board *copyBoard(const struct board *board);
 const char *getPieceString(enum piece piece);
 const char *getPlayerString(enum player player);
 void destroyBoard(struct board *);
