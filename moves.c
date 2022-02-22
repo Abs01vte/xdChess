@@ -646,6 +646,7 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
         move.flags = CASTLE;
         addList(&move, list);
         RESET_MOVE;
+        printf("we outtie");
         break;
       case TAKESTATE:
         if (move.piece == PAWN) {
