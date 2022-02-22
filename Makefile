@@ -21,7 +21,7 @@
 
 CC=gcc
 LDFLAGS=
-CFLAGS=-c -std=gnu11 -g
+CFLAGS=-c -std=gnu11 -g -Wall -Wextra
 TARGET=xdchess
 
 .PHONY: clean run

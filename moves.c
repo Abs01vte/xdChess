@@ -86,6 +86,8 @@ bool legalMove(const struct move *move, const struct board *board) {
   switch (move->piece) {
   case PAWN:
     if (newMove->player == WHITE) {
+      //checking to see if the move is doing the two rank first move for
+      //pawns
       if (board->tiles[move->rank - 2][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - 2][move->file - 'A'].piece ==
@@ -94,6 +96,7 @@ bool legalMove(const struct move *move, const struct board *board) {
           return true;
         }
       }
+      //checking for normal pawn moves
       if (board->tiles[move->rank - 1][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - 1][move->file - 'A'].piece ==
@@ -102,6 +105,8 @@ bool legalMove(const struct move *move, const struct board *board) {
       }
     }
     if (newMove->player == BLACK) {
+      //checking to see if the move is doing the two rank first move for
+      //pawns
       if (board->tiles[move->rank + 2][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + 2][move->file - 'A'].player ==
@@ -110,6 +115,7 @@ bool legalMove(const struct move *move, const struct board *board) {
           return true;
         }
       }
+      //checking for normal pawn moves
       if (board->tiles[move->rank + 1][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + 1][move->file - 'A'].player ==
@@ -171,24 +177,28 @@ bool legalMove(const struct move *move, const struct board *board) {
   case BISHOP:
     int file = move->file - 'A';
     for (int i = 0; i < 8; i++) {
+      // checking down and right
       if (board->tiles[move->rank - i][file - i].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - i][file - i].player ==
               board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
+      // checking up and right
       if (board->tiles[move->rank + i][file - i].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + i][file - i].player ==
               board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
+      // checking down and left
       if (board->tiles[move->rank - i][file + i].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - i][file + i].player ==
               board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
+      // checking up and left
       if (board->tiles[move->rank + i][file + i].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + i][file + i].player ==
@@ -199,24 +209,28 @@ bool legalMove(const struct move *move, const struct board *board) {
     break;
   case ROOK:
     for (int i = 0; i < 8; i++) {
+      // checking up on the same file, returning if it finds one
       if (board->tiles[move->rank - i][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - i][move->file - 'A'].player ==
               board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
+      // checking down on the same file, returning if it finds one
       if (board->tiles[move->rank + i][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + i][move->file - 'A'].player ==
               board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
+      // checking left on the same rank, returning if it finds one
       if (board->tiles[move->rank][move->file - 'A' - i].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank][move->file - 'A' - i].player ==
               board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
+      // checking right on the same rank, returning if it finds one
       if (board->tiles[move->rank][move->file - 'A' + i].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank][move->file - 'A' + i].player ==
@@ -245,6 +259,8 @@ void quitMoves(void) {
 enum noteState getFirstPart(struct move *move, char c) {
   if (islower(c) != 0) {
     move->piece = PAWN;
+    // if the first character is a file designation
+    // then it is a pawn
     switch (c) {
     case 'a':
       move->file = A;
@@ -276,9 +292,11 @@ enum noteState getFirstPart(struct move *move, char c) {
       break;
     }
     return PAWNSTATE;
+// but if it is an "O", it designates castling
   } else if (c == 'O') {
     return CASTLESTATE;
   } else {
+    //or it is a piece designation
     switch (c) {
     case 'Q':
       move->piece = QUEEN;
@@ -307,7 +325,7 @@ enum noteState getFirstPart(struct move *move, char c) {
 }
 enum noteState getSecondPart(struct move *move, char c) {
   if (islower(c) != 0) {
-
+    // if the second character is a file designation, it is a piece
     switch (c) {
     case 'a':
       move->file = A;
@@ -343,30 +361,31 @@ enum noteState getSecondPart(struct move *move, char c) {
     }
     return PIECESTATE;
   } else {
+    // or if it is a rank designation, it is a pawn
     switch (c) {
     case '1':
-      move->rank = 1;
+      move->rank = 0;
       break;
     case '2':
-      move->rank = 2;
+      move->rank = 1;
       break;
     case '3':
-      move->rank = 3;
+      move->rank = 2;
       break;
     case '4':
-      move->rank = 4;
+      move->rank = 3;
       break;
     case '5':
-      move->rank = 5;
+      move->rank = 4;
       break;
     case '6':
-      move->rank = 6;
+      move->rank = 5;
       break;
     case '7':
-      move->rank = 7;
+      move->rank = 6;
       break;
     case '8':
-      move->rank = 8;
+      move->rank = 7;
       break;
     default:
       fprintf(stderr, "Error finding rank for move %c (%d)\n", c, (int)c);
@@ -379,7 +398,8 @@ enum noteState getSecondPart(struct move *move, char c) {
 }
 enum noteState getThirdPart(struct move *move, char c) {
   if (islower(c) != 0) {
-
+    // if the third character is a file designation
+    // then it is a disambiguation for a piece or pawn move
     switch (c) {
     case 'a':
       move->file = A;
@@ -411,7 +431,7 @@ enum noteState getThirdPart(struct move *move, char c) {
       break;
     }
   } else {
-
+// or if it is a rank designation, it is a piece that has a take state
     switch (c) {
 
     case '1':
@@ -458,6 +478,7 @@ enum noteState getThirdPart(struct move *move, char c) {
 enum noteState getFourthPart(struct move *move, char c) {
   if (isupper(c) != 0) {
     switch (c) {
+      //this is only for promotion
     case 'Q':
       move->piece = QUEEN;
       break;
@@ -478,29 +499,30 @@ enum noteState getFourthPart(struct move *move, char c) {
     return PIECESTATE;
   } else {
     switch (c) {
+      // or takes into check, promotion  or disambiguation ranks
     case '1':
-      move->rank = 1;
+      move->rank = 0;
       break;
     case '2':
-      move->rank = 2;
+      move->rank = 1;
       break;
     case '3':
-      move->rank = 3;
+      move->rank = 2;
       break;
     case '4':
-      move->rank = 4;
+      move->rank = 3;
       break;
     case '5':
-      move->rank = 5;
+      move->rank = 4;
       break;
     case '6':
-      move->rank = 6;
+      move->rank = 5;
       break;
     case '7':
-      move->rank = 7;
+      move->rank = 6;
       break;
     case '8':
-      move->rank = 8;
+      move->rank = 7;
       break;
     case '+':
       printf("Check!\n");
@@ -539,6 +561,8 @@ enum noteState getPromotion(struct move *move, char c) {
   }
   return PROMOTIONSTATE;
 }
+// resetting moves for the time the program interprets moves
+// in a list
 #define RESET_MOVE                                                             \
   state = IDLESTATE;                                                           \
   move.player = move.player == WHITE ? BLACK : WHITE;                          \
