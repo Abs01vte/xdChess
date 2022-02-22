@@ -81,32 +81,33 @@ struct move *copyMove(const struct move *move) {
   }
   return newMove;
 }
+
 bool legalMove(const struct move *move, const struct board *board) {
   struct move *newMove = copyMove(move);
   switch (move->piece) {
   case PAWN:
     if (newMove->player == WHITE) {
-      //checking to see if the move is doing the two rank first move for
-      //pawns
+      // checking to see if the move is doing the two rank first move for
+      // pawns
       if (board->tiles[move->rank - 2][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
-          board->tiles[move->rank - 2][move->file - 'A'].piece ==
+          board->tiles[move->rank - 2][move->file - 'A'].player ==
               board->tiles[move->rank][move->file - 'A'].player) {
         if (move->rank - 2 == 1) {
           return true;
         }
       }
-      //checking for normal pawn moves
+      // checking for normal pawn moves
       if (board->tiles[move->rank - 1][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
-          board->tiles[move->rank - 1][move->file - 'A'].piece ==
+          board->tiles[move->rank - 1][move->file - 'A'].player ==
               board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
     }
     if (newMove->player == BLACK) {
-      //checking to see if the move is doing the two rank first move for
-      //pawns
+      // checking to see if the move is doing the two rank first move for
+      // pawns
       if (board->tiles[move->rank + 2][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + 2][move->file - 'A'].player ==
@@ -115,7 +116,7 @@ bool legalMove(const struct move *move, const struct board *board) {
           return true;
         }
       }
-      //checking for normal pawn moves
+      // checking for normal pawn moves
       if (board->tiles[move->rank + 1][move->file - 'A'].piece ==
               board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + 1][move->file - 'A'].player ==
@@ -239,6 +240,8 @@ bool legalMove(const struct move *move, const struct board *board) {
       }
     }
     break;
+  default:
+    break;
   }
   return false;
 }
@@ -292,11 +295,11 @@ enum noteState getFirstPart(struct move *move, char c) {
       break;
     }
     return PAWNSTATE;
-// but if it is an "O", it designates castling
+    // but if it is an "O", it designates castling
   } else if (c == 'O') {
     return CASTLESTATE;
   } else {
-    //or it is a piece designation
+    // or it is a piece designation
     switch (c) {
     case 'Q':
       move->piece = QUEEN;
@@ -431,7 +434,7 @@ enum noteState getThirdPart(struct move *move, char c) {
       break;
     }
   } else {
-// or if it is a rank designation, it is a piece that has a take state
+    // or if it is a rank designation, it is a piece that has a take state
     switch (c) {
 
     case '1':
@@ -473,12 +476,13 @@ enum noteState getThirdPart(struct move *move, char c) {
       break;
     }
   }
+  return ERRORSTATE;
 }
 
 enum noteState getFourthPart(struct move *move, char c) {
   if (isupper(c) != 0) {
     switch (c) {
-      //this is only for promotion
+      // this is only for promotion
     case 'Q':
       move->piece = QUEEN;
       break;
@@ -539,6 +543,7 @@ enum noteState getFourthPart(struct move *move, char c) {
       break;
     }
   }
+  return ERRORSTATE;
 }
 enum noteState getPromotion(struct move *move, char c) {
   switch (c) {
@@ -661,6 +666,7 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
         break;
       default:
         fprintf(stderr, "UNKNOWN STATE: %d\n", state);
+        // fall through
       case ERRORSTATE:
         state = IDLESTATE;
         break;

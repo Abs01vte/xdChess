@@ -111,7 +111,7 @@ int main(int argc, const char *const *argv) {
   struct linkedList *list = getList(file1, file2);
 
   struct node *moveNode = list->first;
-  for (int i = 0; i < list->size; i++) {
+  for (int i = 0; i < (int)list->size; i++) {
     struct move *move = (struct move *)moveNode->data;
     struct board *newBoard = updateBoard(board, move);
     if (newBoard == NULL) {
