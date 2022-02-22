@@ -1,4 +1,5 @@
 #include "list.h"
+#include "moves.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -70,4 +71,23 @@ void printList(struct linkedList *list) {
     printf("%c ", *((char *)curNode->data));
     curNode = curNode->next;
   }
+}
+void printMoveList(struct linkedList *list) {
+  struct node *curNode = list->first;
+  char *string = moveToString(curNode->data);
+  for (int i = 0; i < (int)list->size; i++) {
+    if (!(i & 1)) {
+      printf("%s ", string);
+    }
+    if (i & 1) {
+      printf("%s\n", string);
+    }
+    curNode = curNode->next;
+    free(string);
+    string = NULL;
+    if (curNode != NULL) {
+      string = moveToString(curNode->data);
+    }
+  }
+  free(string);
 }

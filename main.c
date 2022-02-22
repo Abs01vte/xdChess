@@ -123,7 +123,7 @@ int main(int argc, const char *const *argv) {
     printMove(move);
     moveNode = moveNode->next;
   }
-
+  printMoveList(list);
   destroyList(list);
   destroyBoard(board);
   return 0;

@@ -240,15 +240,122 @@ bool legalMove(const struct move *move, const struct board *board) {
       }
     }
     break;
-  default:
-    break;
+  case KING:
+    int moveFile = move->file - 'A';
+    if (move->player == WHITE) {
+      if ((move->rank + 1 <= 7) && (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
+        if (board->tiles[move->rank + 1][moveFile + 1].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile + 1].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + 1][moveFile].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + 1][moveFile - 1].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile - 1].player == move->player) {
+          return true;
+        }
+      }
+      if (moveFile - 1 >= 0 || moveFile + 1 <= 7) {
+        if (board->tiles[move->rank][moveFile - 1].piece == move->piece &&
+            board->tiles[move->rank][moveFile - 1].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank][moveFile + 1].piece == move->piece &&
+            board->tiles[move->rank][moveFile + 1].player == move->player) {
+          return true;
+        }
+        if ((move->rank + 1 <= 7 || move->rank >= 0) &&
+            (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
+          if (board->tiles[move->rank - 1][moveFile - 1].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile - 1].player ==
+                  move->player) {
+            return true;
+          }
+          if (board->tiles[move->rank - 1][moveFile].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile].player == move->player) {
+            return true;
+          }
+          if (board->tiles[move->rank - 1][moveFile + 1].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile + 1].player ==
+                  move->player) {
+            return true;
+          }
+        }
+      } else {
+        printf("Move %s not found", moveToString(move));
+        return false;
+      }
+    }
+    if (move->player == BLACK) {
+      if ((move->rank + 1 <= 7) && (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
+        if (board->tiles[move->rank + 1][moveFile + 1].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile + 1].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + 1][moveFile].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + 1][moveFile - 1].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile - 1].player == move->player) {
+          return true;
+        }
+      }
+      if (moveFile - 1 >= 0 || moveFile + 1 <= 7) {
+        if (board->tiles[move->rank][moveFile - 1].piece == move->piece &&
+            board->tiles[move->rank][moveFile - 1].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank][moveFile + 1].piece == move->piece &&
+            board->tiles[move->rank][moveFile + 1].player == move->player) {
+          return true;
+        }
+        if ((move->rank + 1 <= 7 || move->rank >= 0) &&
+            (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
+          if (board->tiles[move->rank - 1][moveFile - 1].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile - 1].player ==
+                  move->player) {
+            return true;
+          }
+          if (board->tiles[move->rank - 1][moveFile].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile].player == move->player) {
+            return true;
+          }
+          if (board->tiles[move->rank - 1][moveFile + 1].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile + 1].player ==
+                  move->player) {
+            return true;
+          }
+        } else {
+          printf("Move %s not found", moveToString(move));
+          return false;
+        }
+      }
+      break;
+    default:
+      break;
+    }
   }
   return false;
 }
 void printMove(const struct move *move) {
-  printf("Board after playing the move: %s %s %c%d\n\n",
-         getPlayerString(move->player), getPieceString(move->piece),
-         (char)move->file, move->rank + 1);
+  char *moveString = moveToString(move);
+  printf("Board after playing the move: %s\n\n", moveString);
+  free(moveString);
+}
+char *moveToString(const struct move *move) {
+  int size =
+      snprintf(NULL, 0, "%s %s %c%d", getPlayerString(move->player),
+               getPieceString(move->piece), (char)move->file, move->rank + 1);
+  char *string = malloc(size + 1);
+  if (string == NULL) {
+    return NULL;
+  }
+  snprintf(string, size + 1, "%s %s %c%d", getPlayerString(move->player),
+           getPieceString(move->piece), (char)move->file, move->rank + 1);
+  return string;
 }
 void quitMoves(void) {
   regfree(&firstCharacter);
@@ -662,6 +769,7 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
           move.file = (char)buff[i + 1];
           move.flags = TAKES;
           RESET_MOVE;
+          i += 2;
           break;
         }
         break;
