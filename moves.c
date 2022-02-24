@@ -126,52 +126,53 @@ bool legalMove(const struct move *move, const struct board *board) {
     }
     break;
   case KNIGHT:
+    int moveLetter = (int)move->file - 'A';
     // checking if the old knight is two ranks down and one file right from
     // the present position of the new move
-    if (board->tiles[move->rank - 2][move->file - 'B'].piece == KNIGHT &&
-        board->tiles[move->rank - 2][move->file - 'B'].player == move->player) {
+    if (board->tiles[move->rank - 2][moveLetter + 1].piece == KNIGHT &&
+        board->tiles[move->rank - 2][moveLetter + 1].player == move->player) {
       return true;
     }
     // checking if the old knight is two ranks down and one file left from
     // the present position of the new move
-    if (board->tiles[move->rank - 2][move->file - '@'].piece == KNIGHT &&
-        board->tiles[move->rank - 2][move->file - '@'].player == move->player) {
+    if (board->tiles[move->rank - 2][moveLetter - 1].piece == KNIGHT &&
+        board->tiles[move->rank - 2][moveLetter - 1].player == move->player) {
       return true;
     }
     // checking if the old knight is two ranks up and one file right from
     // the present position of the new move
-    if (board->tiles[move->rank + 2][move->file - 'B'].piece == KNIGHT &&
-        board->tiles[move->rank + 2][move->file - 'B'].player == move->player) {
+    if (board->tiles[move->rank + 2][moveLetter + 1].piece == KNIGHT &&
+        board->tiles[move->rank + 2][moveLetter + 1].player == move->player) {
       return true;
     }
     // checking if the old knight is one rank up and two files right from
     // the present position of the new move
-    if (board->tiles[move->rank + 2][move->file - '@'].piece == KNIGHT &&
-        board->tiles[move->rank + 2][move->file - '@'].player == move->player) {
+    if (board->tiles[move->rank + 2][moveLetter - 1].piece == KNIGHT &&
+        board->tiles[move->rank + 2][moveLetter - 1].player == move->player) {
       return true;
     }
     // checking if the old knight is one rank up and two files left from
     // the present position of the new move
-    if (board->tiles[move->rank + 1][move->file - 'C'].piece == KNIGHT &&
-        board->tiles[move->rank + 1][move->file - 'C'].player == move->player) {
+    if (board->tiles[move->rank + 1][moveLetter + 2].piece == KNIGHT &&
+        board->tiles[move->rank + 1][moveLetter + 2].player == move->player) {
       return true;
     }
     // checking if the old knight is one rank down and two files right from
     // the present position of the new move
-    if (board->tiles[move->rank + 1][move->file - '?'].piece == KNIGHT &&
-        board->tiles[move->rank + 1][move->file - '?'].player == move->player) {
+    if (board->tiles[move->rank + 1][moveLetter - 2].piece == KNIGHT &&
+        board->tiles[move->rank + 1][moveLetter - 2].player == move->player) {
       return true;
     }
     // checking if the old knight is one rank down and two files left from
     // the present position of the new move
-    if (board->tiles[move->rank - 1][move->file - 'C'].piece == KNIGHT &&
-        board->tiles[move->rank - 1][move->file - 'C'].player == move->player) {
+    if (board->tiles[move->rank - 1][moveLetter + 2].piece == KNIGHT &&
+        board->tiles[move->rank - 1][moveLetter + 2].player == move->player) {
       return true;
     }
     // checking if the old knight is two ranks down and one file right from
     // the present position of the new move
-    if (board->tiles[move->rank - 1][move->file - '?'].piece == KNIGHT &&
-        board->tiles[move->rank - 1][move->file - '?'].player == move->player) {
+    if (board->tiles[move->rank - 1][moveLetter - 2].piece == KNIGHT &&
+        board->tiles[move->rank - 1][moveLetter - 2].player == move->player) {
       return true;
     }
     break;

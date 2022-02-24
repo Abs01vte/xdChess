@@ -120,10 +120,8 @@ int main(int argc, const char *const *argv) {
     destroyBoard(board);
     printBoard(newBoard);
     board = newBoard;
-    printMove(move);
     moveNode = moveNode->next;
   }
-  printMoveList(list);
   destroyList(list);
   destroyBoard(board);
   return 0;

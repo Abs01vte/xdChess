@@ -137,7 +137,7 @@ bool rookCollision(const struct board *board, const struct move *move) {
             newBoard->tiles[move->rank][file - i].piece != EMPTY ||
             (newBoard->tiles[move->rank][file - i].piece != ROOK &&
              newBoard->tiles[move->rank][file - i].player != move->player)) {
-          printf("Wrong hole!\n");
+
           free(newBoard);
           return true;
         }
@@ -146,7 +146,7 @@ bool rookCollision(const struct board *board, const struct move *move) {
               newBoard->tiles[move->rank][file + i].piece != EMPTY ||
               (newBoard->tiles[move->rank][file + i].piece != ROOK &&
                newBoard->tiles[move->rank][file + i].player != move->player)) {
-            printf("its at least looking in the right direction\n");
+
             free(newBoard);
             return true;
           }
