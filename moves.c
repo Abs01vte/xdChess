@@ -334,6 +334,43 @@ bool legalMove(const struct move *move, const struct board *board) {
         }
       }
       break;
+    case QUEEN:
+      int moveFile = move->file - 'A';
+      for (int i = 0; i < 8; i++) {
+        if (board->tiles[move->rank + i][moveFile].piece == move->piece &&
+            board->tiles[move->rank + i][moveFile].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + i][moveFile + i].piece == move->piece &&
+            board->tiles[move->rank + i][moveFile + i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + i][moveFile - i].piece == move->piece &&
+            board->tiles[move->rank + i][moveFile - i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank - i][moveFile].piece == move->piece &&
+            board->tiles[move->rank - i][moveFile].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank - i][moveFile + i].piece == move->piece &&
+            board->tiles[move->rank - i][moveFile + i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank - i][moveFile - i].piece == move->piece &&
+            board->tiles[move->rank - i][moveFile - i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank][moveFile + i].piece == move->piece &&
+            board->tiles[move->rank][moveFile + i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank][moveFile - i].piece == move->piece &&
+            board->tiles[move->rank][moveFile - i].player == move->player) {
+          return true;
+        }
+      }
+      break;
     default:
       break;
     }
@@ -753,7 +790,6 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
         move.flags = CASTLE;
         addList(&move, list);
         RESET_MOVE;
-        printf("we outtie");
         break;
       case TAKESTATE:
         if (move.piece == PAWN) {
@@ -764,7 +800,7 @@ struct linkedList *getList(FILE *file1, FILE *file2) {
           i += 2;
           break;
         }
-        if (move.piece != PAWN && move.piece != EMPTY) {
+        if (move.piece != PAWN && move.piece != EMPTY && !TAKESTATE) {
           move.rank = (char)buff[i + 2];
           move.file = (char)buff[i + 1];
           move.flags = TAKES;
