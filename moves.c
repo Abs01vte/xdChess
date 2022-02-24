@@ -90,18 +90,18 @@ bool legalMove(const struct move *move, const struct board *board) {
       // checking to see if the move is doing the two rank first move for
       // pawns
       if (board->tiles[move->rank - 2][move->file - 'A'].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - 2][move->file - 'A'].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         if (move->rank - 2 == 1) {
           return true;
         }
       }
       // checking for normal pawn moves
       if (board->tiles[move->rank - 1][move->file - 'A'].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - 1][move->file - 'A'].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
     }
@@ -109,18 +109,18 @@ bool legalMove(const struct move *move, const struct board *board) {
       // checking to see if the move is doing the two rank first move for
       // pawns
       if (board->tiles[move->rank + 2][move->file - 'A'].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + 2][move->file - 'A'].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         if (move->rank + 2 == 7) {
           return true;
         }
       }
       // checking for normal pawn moves
       if (board->tiles[move->rank + 1][move->file - 'A'].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + 1][move->file - 'A'].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
     }
@@ -181,30 +181,30 @@ bool legalMove(const struct move *move, const struct board *board) {
     for (int i = 0; i < 8; i++) {
       // checking down and right
       if (board->tiles[move->rank - i][file - i].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - i][file - i].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
       // checking up and right
       if (board->tiles[move->rank + i][file - i].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + i][file - i].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
       // checking down and left
       if (board->tiles[move->rank - i][file + i].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - i][file + i].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
       // checking up and left
       if (board->tiles[move->rank + i][file + i].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + i][file + i].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
     }
@@ -213,30 +213,30 @@ bool legalMove(const struct move *move, const struct board *board) {
     for (int i = 0; i < 8; i++) {
       // checking up on the same file, returning if it finds one
       if (board->tiles[move->rank - i][move->file - 'A'].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank - i][move->file - 'A'].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
       // checking down on the same file, returning if it finds one
       if (board->tiles[move->rank + i][move->file - 'A'].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank + i][move->file - 'A'].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
       // checking left on the same rank, returning if it finds one
       if (board->tiles[move->rank][move->file - 'A' - i].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank][move->file - 'A' - i].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
       // checking right on the same rank, returning if it finds one
       if (board->tiles[move->rank][move->file - 'A' + i].piece ==
-              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A'].piece &&
           board->tiles[move->rank][move->file - 'A' + i].player ==
-              board->tiles[move->rank][move->file - 'A'].player) {
+          board->tiles[move->rank][move->file - 'A'].player) {
         return true;
       }
     }
@@ -271,7 +271,7 @@ bool legalMove(const struct move *move, const struct board *board) {
             (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
           if (board->tiles[move->rank - 1][moveFile - 1].piece == move->piece &&
               board->tiles[move->rank - 1][moveFile - 1].player ==
-                  move->player) {
+              move->player) {
             return true;
           }
           if (board->tiles[move->rank - 1][moveFile].piece == move->piece &&
@@ -280,7 +280,7 @@ bool legalMove(const struct move *move, const struct board *board) {
           }
           if (board->tiles[move->rank - 1][moveFile + 1].piece == move->piece &&
               board->tiles[move->rank - 1][moveFile + 1].player ==
-                  move->player) {
+              move->player) {
             return true;
           }
         }
@@ -317,7 +317,7 @@ bool legalMove(const struct move *move, const struct board *board) {
             (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
           if (board->tiles[move->rank - 1][moveFile - 1].piece == move->piece &&
               board->tiles[move->rank - 1][moveFile - 1].player ==
-                  move->player) {
+              move->player) {
             return true;
           }
           if (board->tiles[move->rank - 1][moveFile].piece == move->piece &&
@@ -326,7 +326,7 @@ bool legalMove(const struct move *move, const struct board *board) {
           }
           if (board->tiles[move->rank - 1][moveFile + 1].piece == move->piece &&
               board->tiles[move->rank - 1][moveFile + 1].player ==
-                  move->player) {
+              move->player) {
             return true;
           }
         } else {
@@ -378,6 +378,20 @@ bool legalMove(const struct move *move, const struct board *board) {
   }
   return false;
 }
+// TODO
+static bool isSpecialMove() {
+  return false;
+}
+// TODO
+static const char *moveFlagToStr(const struct move *move) {
+  if(!move)
+    return NULL;
+  if(move->flags & CASTLE) {
+    return "Castle";
+  }
+
+  return NULL;
+}
 void printMove(const struct move *move) {
   char *moveString = moveToString(move);
   printf("Board after playing the move: %s\n\n", moveString);
@@ -385,8 +399,8 @@ void printMove(const struct move *move) {
 }
 char *moveToString(const struct move *move) {
   int size =
-      snprintf(NULL, 0, "%s %s %c%d", getPlayerString(move->player),
-               getPieceString(move->piece), (char)move->file, move->rank + 1);
+    snprintf(NULL, 0, "%s %s %c%d", getPlayerString(move->player),
+             getPieceString(move->piece), (char)move->file, move->rank + 1);
   char *string = malloc(size + 1);
   if (string == NULL) {
     return NULL;
@@ -713,111 +727,138 @@ enum noteState getPromotion(struct move *move, char c) {
 }
 // resetting moves for the time the program interprets moves
 // in a list
-#define RESET_MOVE                                                             \
-  state = IDLESTATE;                                                           \
-  move.player = move.player == WHITE ? BLACK : WHITE;                          \
-  move = (struct move){                                                        \
-      .player = move.player, .piece = EMPTY, .rank = 0, .file = FILELESS};
-struct linkedList *getList(FILE *file1, FILE *file2) {
-  char buff[512];
+
+/**
+ * Extremely simple algebraic chess notation parser.
+ * file: File to read from.
+ * buff: File cache to read into.
+ * bufLen: Length of buff
+ * position: Pointer to a size_t that is the last read position in the buffer.
+ * When this function is done it will write the last read char into position.
+ */
+static struct move getMoveFromFile(FILE *file)  {
   enum noteState state = IDLESTATE;
-  struct move move = (struct move){
-      .player = WHITE, .piece = EMPTY, .rank = 0, .file = FILELESS, .flags = 0};
+  struct move move = (struct move) {
+    .player = WHITE, .piece = EMPTY, .rank = 0, .file = FILELESS, .flags = 0};
+  for(int nextChar = fgetc(file); ; nextChar = fgetc(file)) {
+    if(nextChar == EOF)
+    {
+      move.player = NONE;
+      return move;
+    }
+    char curChar = (char)nextChar;
+    // Match the next character to a regular expression.
+    // This is very simple due to all chess information being only one
+    // character in length.
+
+    // Constant string that represents the current character.
+    const char curStr[] = {nextChar, '\0'};
+    bool checkState = curChar == '+' || curChar == '#';
+    switch (state) {
+    case IDLESTATE:
+      if (regexec(&firstCharacter, curStr, 0, NULL, 0) == 0) {
+        state = getFirstPart(&move, curChar);
+      }
+      if (regexec(&castle, curStr, 0, NULL, 0) == 0) {
+        state = CASTLESTATE;
+        move.flags = CASTLE;
+      }
+      break;
+    case PAWNSTATE:
+      if (regexec(&numberMatcher, curStr, 0, NULL, 0) == 0) {
+        move.rank = curChar - '1';
+        goto end_read;
+      }
+      break;
+    case PIECESTATE:
+      if (regexec(&secondCharacter, curStr, 0, NULL, 0) == 0) {
+        state = getSecondPart(&move, curChar);
+        state = IDLESTATE;
+      }
+      if (regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
+        state = getThirdPart(&move, (char)fgetc(file));
+        goto end_read;
+      }
+      if (checkState && move.rank != 0 && move.file != FILELESS) {
+        // TODO: check
+        goto end_read;
+      }
+      // TODO: Takes, disambiguation
+      break;
+    case PROMOTIONSTATE:
+      if (regexec(&promotion, curStr, 0, NULL, 0) == 0) {
+        move.piece = curChar;
+      }
+      break;
+    case CASTLESTATE:
+      move.flags = CASTLE;
+      goto end_read;
+      break;
+      /* TODO read one at a time
+         case TAKESTATE:
+         if (move.piece == PAWN) {
+         move.rank = (char)buff[i + 2];
+         move.file = (char)buff[i + 1];
+         move.flags = TAKES;
+         RESET_MOVE;
+         i += 2;
+         break;
+         }
+         if (move.piece != PAWN && move.piece != EMPTY && !TAKESTATE) {
+         move.rank = (char)buff[i + 2];
+         move.file = (char)buff[i + 1];
+         move.flags = TAKES;
+         RESET_MOVE;
+         i += 2;
+         break;
+         }
+         break;
+      */
+    default:
+      fprintf(stderr, "UNKNOWN STATE: %d\n", state);
+      // fall through
+    case ERRORSTATE:
+      state = IDLESTATE;
+      break;
+    }
+  }
+end_read:
+  return move;
+}
+
+struct linkedList *getList(FILE *file1, FILE *file2) {
+  if(!file1) {
+    if(!file2) {
+      return NULL;
+    }
+    file1 = file2;
+    file2 = NULL;
+  }
   struct linkedList *list = makeList(sizeof(struct move));
   if (list == NULL) {
     return NULL;
   }
-  // Extremely simple algebraic chess notation parser.
-  for (char *retVal = fgets(buff, sizeof(buff), file1); retVal != NULL;
-       retVal = fgets(buff, sizeof(buff), file1)) {
-    size_t buffLen = strnlen(buff, sizeof(buff));
-    if (buff[buffLen - 1] == '\n')
-      buffLen--;
-    for (size_t i = 0; i < buffLen; i++) {
-      // Match the next character to a regular expression.
-      // This is very simple due to all chess information being only one
-      // character in length.
 
-      // Constant string that represents the current character.
-      const char curStr[] = {buff[i], '\0'};
-      bool checkState = buff[i] == '+' || buff[i] == '#';
-      switch (state) {
-      case IDLESTATE:
-        if (regexec(&firstCharacter, curStr, 0, NULL, 0) == 0) {
-          state = getFirstPart(&move, buff[i]);
-        }
-        if (regexec(&castle, curStr, 0, NULL, 0) == 0) {
-          state = CASTLESTATE;
-        }
-        break;
-      case PAWNSTATE:
-        if (regexec(&numberMatcher, curStr, 0, NULL, 0) == 0) {
-          move.rank = buff[i] - '1';
-          addList(&move, list);
-        }
-        if (regexec(&secondCharacter, curStr, 0, NULL, 0) == 0) {
-          if (buff[i + 1] == 'x') {
-            state = TAKESTATE;
-            i++;
-            break;
-          }
-        }
-        RESET_MOVE;
-        break;
-      case PIECESTATE:
-        if (regexec(&secondCharacter, curStr, 0, NULL, 0) == 0) {
-          state = getSecondPart(&move, buff[i]);
-          state = IDLESTATE;
-        }
-        if (regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
-          state = getThirdPart(&move, buff[i + 1]);
-          addList(&move, list);
-          RESET_MOVE;
-          i++;
-        }
-        if (checkState && move.rank != 0 && move.file != FILELESS) {
-          // TODO: check
-          addList(&move, list);
-          RESET_MOVE;
-        }
-        // TODO: Takes, disambiguation
-        break;
-      case PROMOTIONSTATE:
-        if (regexec(&promotion, curStr, 0, NULL, 0) == 0) {
-          move.piece = buff[i];
-        }
-        break;
-      case CASTLESTATE:
-        move.flags = CASTLE;
-        addList(&move, list);
-        RESET_MOVE;
-        break;
-      case TAKESTATE:
-        if (move.piece == PAWN) {
-          move.rank = (char)buff[i + 2];
-          move.file = (char)buff[i + 1];
-          move.flags = TAKES;
-          RESET_MOVE;
-          i += 2;
-          break;
-        }
-        if (move.piece != PAWN && move.piece != EMPTY && !TAKESTATE) {
-          move.rank = (char)buff[i + 2];
-          move.file = (char)buff[i + 1];
-          move.flags = TAKES;
-          RESET_MOVE;
-          i += 2;
-          break;
-        }
-        break;
-      default:
-        fprintf(stderr, "UNKNOWN STATE: %d\n", state);
-        // fall through
-      case ERRORSTATE:
-        state = IDLESTATE;
-        break;
+  struct move nextMove;
+  enum player player = WHITE;
+
+  // One file mode.
+  if(!file2) {
+    while(true) {
+      nextMove = getMoveFromFile(file1);
+      if(nextMove.player != NONE)
+      {
+        nextMove.player = player;
+        player = (player == WHITE) ? BLACK : WHITE;
+        addList(&nextMove, list);
       }
-    }
+      else
+        break;
+    } 
   }
+  // Two file mode.
+  else {
+  }
+    
   return list;
 }
