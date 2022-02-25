@@ -64,7 +64,7 @@ In other words: `cat test.txt | xdchess -` is the same as `cat test.txt | xdches
 | Flag | Argument | What        | Explanation                                                       |
 |:-----|:---------|:------------|:------------------------------------------------------------------|
 | \-a  |          | Alternating | Alternates between white and black (default behaviour)            |
-| \-m  |          | Middle      | Read entire file and split moves down the moddle                  |
+| \-m  |          | Middle      | Read entire file and split moves down the middle                  |
 | \-x  | integer  | Max moves   | Maximum amount of moves to create before quitting                 |
 | \-b  | integer  | Max bytes   | Maximum amount of bytes to read from a file before deriving moves |
 
