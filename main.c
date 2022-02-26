@@ -109,18 +109,39 @@ int main(int argc, const char *const *argv) {
   printBoard(board);
   initMoves();
   struct linkedList *list = getList(file1, file2);
-
-  struct node *moveNode = list->first;
-  for (int i = 0; i < (int)list->size; i++) {
-    struct move *move = (struct move *)moveNode->data;
-    struct board *newBoard = updateBoard(board, move);
-    if (newBoard == NULL) {
-      break;
+  if (list == NULL) {
+    printf("No file detected.\nType to play moves:\n");
+    struct move *singleMove;
+    char input[8];
+    fgets(input, sizeof(input), stdin);
+    while (input != NULL) {
+      struct board *newBoard = updateBoard(board, singleMove);
+      if (newBoard == NULL) {
+        break;
+      }
+      for (int i = 0; i < 8; i++) {
+        break;
+      }
+      destroyBoard(board);
+      printBoard(newBoard);
+      board = newBoard;
+      printf("Play next move: \n");
+      free(singleMove);
+      fgets(input, sizeof(input), stdin);
     }
-    destroyBoard(board);
-    printBoard(newBoard);
-    board = newBoard;
-    moveNode = moveNode->next;
+  } else {
+    struct node *moveNode = list->first;
+    for (int i = 0; i < (int)list->size; i++) {
+      struct move *move = (struct move *)moveNode->data;
+      struct board *newBoard = updateBoard(board, move);
+      if (newBoard == NULL) {
+        break;
+      }
+      destroyBoard(board);
+      printBoard(newBoard);
+      board = newBoard;
+      moveNode = moveNode->next;
+    }
   }
   destroyList(list);
   destroyBoard(board);

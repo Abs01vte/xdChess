@@ -46,7 +46,7 @@ struct board *makeBoard(void) {
   return newBoard;
 }
 // Displays the board
-void printBoard(struct board *board) {
+void printBoard(const struct board *board) {
   if (board == NULL) {
     return;
   }
@@ -192,44 +192,45 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
       // the new board has the new move added to the board, piece and side
       newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
       newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
+      int mFile = (int)move->file - 'A';
       // checking for first move double space move
       if (move->player == WHITE) {
-        if (newBoard->tiles[move->rank - 2][move->file - 'A'].piece ==
-                newBoard->tiles[move->rank][move->file - 'A'].piece &&
-            newBoard->tiles[move->rank - 2][move->file - 'A'].player ==
-                newBoard->tiles[move->rank][move->file - 'A'].player) {
-          newBoard->tiles[move->rank - 2][move->file - 'A'].piece = EMPTY;
-          newBoard->tiles[move->rank - 2][move->file - 'A'].player = NONE;
+        if (newBoard->tiles[move->rank - 2][mFile].piece ==
+                newBoard->tiles[move->rank][mFile].piece &&
+            newBoard->tiles[move->rank - 2][mFile].player ==
+                newBoard->tiles[move->rank][mFile].player) {
+          newBoard->tiles[move->rank - 2][mFile].piece = EMPTY;
+          newBoard->tiles[move->rank - 2][mFile].player = NONE;
           break;
-        } else if (newBoard->tiles[move->rank - 1][move->file - 'A'].piece ==
-                       newBoard->tiles[move->rank][move->file - 'A'].piece &&
-                   newBoard->tiles[move->rank - 1][move->file - 'A'].player ==
-                       newBoard->tiles[move->rank][move->file - 'A'].player) {
-          newBoard->tiles[move->rank - 1][move->file - 'A'].piece = EMPTY;
-          newBoard->tiles[move->rank - 1][move->file - 'A'].player = NONE;
+        } else if (newBoard->tiles[move->rank - 1][mFile].piece ==
+                       newBoard->tiles[move->rank][mFile].piece &&
+                   newBoard->tiles[move->rank - 1][mFile].player ==
+                       newBoard->tiles[move->rank][mFile].player) {
+          newBoard->tiles[move->rank - 1][mFile].piece = EMPTY;
+          newBoard->tiles[move->rank - 1][mFile].player = NONE;
           break;
         }
       }
       if (move->player == BLACK) {
-        if (newBoard->tiles[move->rank + 2][move->file - 'A'].piece ==
-                newBoard->tiles[move->rank][move->file - 'A'].piece &&
-            newBoard->tiles[move->rank + 2][move->file - 'A'].player ==
-                newBoard->tiles[move->rank][move->file - 'A'].player) {
-          newBoard->tiles[move->rank + 2][move->file - 'A'].piece = EMPTY;
-          newBoard->tiles[move->rank + 2][move->file - 'A'].player = NONE;
+        if (newBoard->tiles[move->rank + 2][mFile].piece ==
+                newBoard->tiles[move->rank][mFile].piece &&
+            newBoard->tiles[move->rank + 2][mFile].player ==
+                newBoard->tiles[move->rank][mFile].player) {
+          newBoard->tiles[move->rank + 2][mFile].piece = EMPTY;
+          newBoard->tiles[move->rank + 2][mFile].player = NONE;
           break;
         }
-        if (newBoard->tiles[move->rank + 1][move->file - 'A'].piece ==
-                newBoard->tiles[move->rank][move->file - 'A'].piece &&
-            newBoard->tiles[move->rank + 1][move->file - 'A'].player ==
-                newBoard->tiles[move->rank][move->file - 'A'].player) {
-          newBoard->tiles[move->rank + 1][move->file - 'A'].piece = EMPTY;
-          newBoard->tiles[move->rank + 1][move->file - 'A'].player = NONE;
+        if (newBoard->tiles[move->rank + 1][mFile].piece ==
+                newBoard->tiles[move->rank][mFile].piece &&
+            newBoard->tiles[move->rank + 1][mFile].player ==
+                newBoard->tiles[move->rank][mFile].player) {
+          newBoard->tiles[move->rank + 1][mFile].piece = EMPTY;
+          newBoard->tiles[move->rank + 1][mFile].player = NONE;
           break;
         }
       }
     } else {
-      printf("Move %s not found", moveToString(move));
+      printf("Move %s not found- updateBoard\n", moveToString(move));
       return newBoard;
     }
   } break;
@@ -450,17 +451,17 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
           break;
         }
       } else {
-        printf("Move %s not found", moveToString(move));
+        printf("Move %s not found\n", moveToString(move));
         return newBoard;
       }
 
       break;
     case BISHOP:
-      // the new board has the new move added to the board, piece and side
-      newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
-      newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
       // first, checking for the legality of the move
       if (legalMove(move, board)) {
+        // the new board has the new move added to the board, piece and side
+        newBoard->tiles[move->rank][move->file - 'A'].player = move->player;
+        newBoard->tiles[move->rank][move->file - 'A'].piece = move->piece;
         int file = move->file - 'A';
         for (int i = 1; i < 8; i++) {
           if (newBoard->tiles[move->rank - i][file - i].piece ==
@@ -493,7 +494,7 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
           }
         }
       } else {
-        printf("Move %s not found", moveToString(move));
+        printf("Move %s not found\n", moveToString(move));
         return newBoard;
       }
       break;
@@ -610,7 +611,7 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
               }
             }
           } else {
-            printf("Move %s not found", moveToString(move));
+            printf("Move %s not found\n", moveToString(move));
             return newBoard;
           }
         }
@@ -671,7 +672,7 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
                 newBoard->tiles[move->rank - 1][fileMove + 1].piece = EMPTY;
               }
             } else {
-              printf("Move %s not found", moveToString(move));
+              printf("Move %s not found\n", moveToString(move));
               return newBoard;
             }
           }
@@ -749,7 +750,7 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
           }
         }
       } else {
-        printf("Move %s not found", moveToString(move));
+        printf("Move %s not found\n", moveToString(move));
         return newBoard;
       }
       break;

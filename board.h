@@ -18,7 +18,7 @@ struct squareTile {
 struct board {
   struct squareTile tiles[8][8];
 };
-void printBoard(struct board *);
+void printBoard(const struct board *);
 struct board *makeBoard(void);
 /*
  * This takes in a board and creates a new one in order to return states
