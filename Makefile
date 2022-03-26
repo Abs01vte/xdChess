@@ -34,7 +34,7 @@ $(TARGET): main.o board.o list.o moves.o
 main.o: main.c
 	$(CC) -o $@ $(CFLAGS) $<
 
-board.o: board.c
+board.o: board.c board.h
 	$(CC) -o $@ $(CFLAGS) $<
 
 list.o: list.c list.h
