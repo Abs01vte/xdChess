@@ -356,7 +356,10 @@ bool legalMove(const struct move *move, const struct board *board) {
   return false;
 }
 // TODO
-static bool isSpecialMove(const struct move *move) { return false; }
+static bool isSpecialMove(const struct move *move) {
+
+  return false;
+}
 // TODO
 static const char *moveFlagToStr(const struct move *move) {
   if (!move)
@@ -489,6 +492,7 @@ enum noteState getSecondPart(struct move *move, char c) {
       move->file = H;
       break;
     case 'x':
+      printMove(move);
       return TAKESTATE;
       break;
     default:
@@ -768,7 +772,16 @@ static struct move getMoveFromFile(FILE *file) {
       move.flags = CASTLE;
       goto end_read;
       break;
-      /* TODO read one at a time
+    case TAKESTATE:
+      move.flags = TAKES;
+      move.piece = curStr[-1];
+      if (regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
+        move.file = curChar;
+      }
+      if (regexec(&fourthCharacter, curStr, 0, NULL, 0) == 0) {
+        move.rank = curChar;
+      }
+      /*
          case TAKESTATE:
          if (move.piece == PAWN) {
          move.rank = (char)buff[i + 2];
@@ -778,7 +791,7 @@ static struct move getMoveFromFile(FILE *file) {
          i += 2;
          break;
          }
-         if (move.piece != PAWN && move.piece != EMPTY && !TAKESTATE) {
+         if (move.piece != PAWN && move.piece != EMPTY && TAKESTATE) {
          move.rank = (char)buff[i + 2];
          move.file = (char)buff[i + 1];
          move.flags = TAKES;
@@ -786,8 +799,9 @@ static struct move getMoveFromFile(FILE *file) {
          i += 2;
          break;
          }
+         */
          break;
-      */
+
     default:
       fprintf(stderr, "UNKNOWN STATE: %d\n", state);
       // fall through

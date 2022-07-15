@@ -99,6 +99,7 @@ void parseCMDArgs(int argc, const char *const *argv) {
  * argv: Argument vector.
  * return: 0 on success, 1 on initialization failure.
  */
+ int turn;
 int main(int argc, const char *const *argv) {
   parseCMDArgs(argc, argv);
   struct board *board = makeBoard();
@@ -115,6 +116,7 @@ int main(int argc, const char *const *argv) {
     char input[8];
     fgets(input, sizeof(input), stdin);
     while (input != NULL) {
+
       struct board *newBoard = updateBoard(board, singleMove);
       if (newBoard == NULL) {
         break;
@@ -128,11 +130,16 @@ int main(int argc, const char *const *argv) {
       printf("Play next move: \n");
       free(singleMove);
       fgets(input, sizeof(input), stdin);
+
     }
   } else {
     struct node *moveNode = list->first;
     for (int i = 0; i < (int)list->size; i++) {
       struct move *move = (struct move *)moveNode->data;
+      if (move->player == WHITE) {
+        turn++;
+        printf("Turn %d\n", turn);
+      }
       struct board *newBoard = updateBoard(board, move);
       if (newBoard == NULL) {
         break;
