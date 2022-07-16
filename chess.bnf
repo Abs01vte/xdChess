@@ -1,0 +1,35 @@
+;; Algebraic chess notation BNF.
+;; Chess is not context free since a string's validity is dependent on the
+;; state of the board.
+
+<algebraic-notation> ::= <algebraic-notation> <move>
+                     | <move>
+
+<move> ::= <pawn-move> | <normal-piece-move> | <castling-move>
+
+<pawn-move> ::= <file><rank><maybe-check-or-mate>
+            | <file><rank>=<piece><maybe-check-or-mate>
+            | <file>x<file><rank><maybe-check-or-mate>
+            | <file>x<file><rank><maybe-check-or-mate> e.p.
+            | <file>x<file><rank>=<piece><maybe-check-or-mate>
+
+<normal-piece-move> ::= <normal-piece><file><rank><maybe-check-or-mate>
+                    | <normal-piece>x<file><rank><maybe-check-or-mate>
+                    | <normal-piece><rank><file><rank><maybe-check-or-mate>
+                    | <normal-piece><rank>x<file><rank><maybe-check-or-mate>
+                    | <normal-piece><file><file><rank><maybe-check-or-mate>
+                    | <normal-piece><file>x<file><rank><maybe-check-or-mate>
+
+<castling-move> ::= O-O<maybe-check-or-mate>
+                | O-O-O<maybe-check-or-mate>
+                | O-O-O-O-O-O<maybe-check-or-mate>
+
+<maybe-check-or-mate> ::= + | # | ""
+
+<piece> ::= Q | N | B | R
+
+<normal-piece> ::= Q | N | B | R | K
+
+<rank> ::= 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+
+<file> ::= a | b | c | d | e | f | g | h

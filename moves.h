@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 enum file {
+  FILELESS = 0,
   A = 'A',
   B = 'B',
   C = 'C',
@@ -13,26 +14,42 @@ enum file {
   F = 'F',
   G = 'G',
   H = 'H',
-  FILELESS
 };
-#define CASTLE 1
-#define TAKES 2
-#define PROMOTION 4
-#define ENPASSANT 8
-#define CHECK 16
-#define CHECKMATE 32
+#define CHESS_ERROR 0
+#define CHESS_NORMAL 1
+#define CASTLE 2
+#define TAKES 4
+#define PROMOTION 8
+#define ENPASSANT 16
+#define CHECK 32
+#define CHECKMATE 64
 struct move {
-  // Player is the player that makes the move.
-  enum player player;
   // Piece is the piece that is being moved.
   enum piece piece;
   // File is the letter, or vertical groupings on the board.
   enum file file;
   // Rank defines the horizontal groupings on the board
   int rank;
+  // Disambiguating file.
+  enum file disFile;
+  // Disambiguating rank.
+  int disRank;
   // Special cases for a particular move
   unsigned flags;
 };
+
+#define DEFAULT_PIECE (struct move) { .piece = 0, .file = 0, .rank = 0, .disFile = 0,\
+            .disRank = 0, .flags = CHESS_ERROR }
+
+struct moveTuple {
+    struct move m1;
+    struct move m2;
+};
+struct move pullMove(FILE *file);
+
+
+struct moveTuple pullMoves(FILE *file1, FILE *file2);
+
 // Imports and interprets list
 struct linkedList *getList(FILE *file1, FILE *file2);
 // prepares regex's for checking the character stream
