@@ -121,9 +121,7 @@ int main(int argc, const char *const *argv) {
       if (newBoard == NULL) {
         break;
       }
-      for (int i = 0; i < 8; i++) {
-        break;
-      }
+
       destroyBoard(board);
       printBoard(newBoard);
       board = newBoard;

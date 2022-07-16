@@ -15,6 +15,7 @@ regex_t thirdCharacter;
 regex_t fourthCharacter;
 regex_t promotion;
 regex_t castle;
+regex_t takes;
 
 enum noteState {
   PAWNSTATE,
@@ -43,7 +44,7 @@ bool initMoves(void) {
     fprintf(stderr, "Compilation error in number matcher regex\n");
     return false;
   }
-  value = regcomp(&secondCharacter, "x|1|2|3|4|5|6|7|8|a|b|c|d|e|f|g|h",
+  value = regcomp(&secondCharacter, "1|2|3|4|5|6|7|8|a|b|c|d|e|f|g|h",
                   REG_EXTENDED);
   if (value != 0) {
     fprintf(stderr, "Compilation error in second character regex\n");
@@ -67,6 +68,11 @@ bool initMoves(void) {
     return false;
   }
   value = regcomp(&castle, "O|-", REG_EXTENDED);
+  if (value != 0) {
+    fprintf(stderr, "Compilation error in castle character regex\n");
+    return false;
+  }
+  value = regcomp(&takes, "x|X", REG_EXTENDED);
   if (value != 0) {
     fprintf(stderr, "Compilation error in castle character regex\n");
     return false;
@@ -110,6 +116,22 @@ bool legalMove(const struct move *move, const struct board *board) {
       if (board->tiles[move->rank + 1][mFile].piece == move->piece &&
           board->tiles[move->rank + 1][mFile].player == move->player) {
         return true;
+      }
+      if (move->flags == TAKESTATE) {
+        if (move->player == WHITE){
+          if (board->tiles[move->rank][mFile].player != move->player) {
+            if (board->tiles[move->rank - 1][mFile - 1].piece == move->piece &&
+                board->tiles[move->rank - 1][mFile - 1].player == move->player) {
+                  return true;
+                }
+            if (board->tiles[move->rank - 1][mFile + 1].piece == move->piece &&
+                board->tiles[move->rank - 1][mFile + 1].player == move->player) {
+                  return true;
+                }
+
+          }
+        }
+
       }
     }
     break;
@@ -370,6 +392,7 @@ static const char *moveFlagToStr(const struct move *move) {
 
   return NULL;
 }
+
 void printMove(const struct move *move) {
   char *moveString = moveToString(move);
   printf("Board after playing the move: %s\n\n", moveString);
@@ -732,6 +755,10 @@ static struct move getMoveFromFile(FILE *file) {
     // Constant string that represents the current character.
     const char curStr[] = {curChar, '\0'};
     bool checkState = curChar == '+' || curChar == '#';
+    bool takes = curChar == 'x' || curChar == 'X';
+    if (takes) {
+      move.flags = TAKES;
+    }
     switch (state) {
     case IDLESTATE:
       if (regexec(&firstCharacter, curStr, 0, NULL, 0) == 0) {
@@ -747,17 +774,21 @@ static struct move getMoveFromFile(FILE *file) {
         move.rank = curChar - '1';
         goto end_read;
       }
+      if (takes && (move.rank != -1 && move.rank != 8) && move.file != FILELESS) {
+
+      }
       break;
     case PIECESTATE:
       if (regexec(&secondCharacter, curStr, 0, NULL, 0) == 0) {
         state = getSecondPart(&move, curChar);
         state = IDLESTATE;
+      //  if (){}
       }
       if (regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
         state = getThirdPart(&move, (char)fgetc(file));
         goto end_read;
       }
-      if (checkState && move.rank != 0 && move.file != FILELESS) {
+      if (checkState && move.rank != 8 && move.file != FILELESS) {
         // TODO: check
         goto end_read;
       }
@@ -773,7 +804,6 @@ static struct move getMoveFromFile(FILE *file) {
       goto end_read;
       break;
     case TAKESTATE:
-      move.flags = TAKES;
       move.piece = curStr[-1];
       if (regexec(&thirdCharacter, curStr, 0, NULL, 0) == 0) {
         move.file = curChar;
