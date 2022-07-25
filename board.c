@@ -77,6 +77,299 @@ struct board *copyBoard(const struct board *board) {
   memcpy(newBoard, board, sizeof(*board));
   return newBoard;
 }
+bool legalMove(const struct move *move, const struct board *board) {
+  switch (move->piece) {
+  case PAWN:
+    int mFile = (int)move->file - 'A';
+    if (move->player == WHITE) {
+      // checking to see if the move is doing the two rank first move for
+      // pawns
+      if (board.tiles[move->rank - 2][mFile].piece == move->piece &&
+          board.tiles[move->rank - 2][mFile].player == move->player) {
+        return true;
+      }
+      // checking for normal pawn moves
+      if (board.tiles[move->rank - 1][mFile].piece == move->piece &&
+          board.tiles[move->rank - 1][mFile].player == move->player) {
+        return true;
+      }
+    }
+    if (move->player == BLACK) {
+      // checking to see if the move is doing the two rank first move for
+      // pawns
+      if (board.tiles[move->rank + 2][mFile].piece == move->piece &&
+          board.tiles[move->rank + 2][mFile].player == move->player) {
+        return true;
+      }
+      // checking for normal pawn moves
+      if (board->tiles[move->rank + 1][mFile].piece == move->piece &&
+          board->tiles[move->rank + 1][mFile].player == move->player) {
+        return true;
+      }
+      if (move->flags == TAKES) {
+          if (board->tiles[move->rank][mFile].player != move->player) {
+            if (board->tiles[move->rank - 1][mFile - 1].piece == move->piece &&
+                board->tiles[move->rank - 1][mFile - 1].player == move->player) {
+                  return true;
+                }
+            if (board->tiles[move->rank - 1][mFile + 1].piece == move->piece &&
+                board->tiles[move->rank - 1][mFile + 1].player == move->player) {
+                  return true;
+                }
+          }
+            if (board->tiles[move->rank + 1][mFile - 1].piece == move->piece &&
+                board->tiles[move->rank + 1][mFile - 1].player == move->player) {
+                  return true;
+                }
+            if (board->tiles[move->rank + 1][mFile + 1].piece == move->piece &&
+                board->tiles[move->rank + 1][mFile + 1].player == move->player) {
+                  return true;
+                }
+      }
+    }
+    break;
+  case KNIGHT:
+    int moveLetter = (int)move->file - 'A';
+    // checking if the old knight is two ranks down and one file right from
+    // the present position of the new move
+    if (board->tiles[move->rank - 2][moveLetter + 1].piece == KNIGHT &&
+        board->tiles[move->rank - 2][moveLetter + 1].player == move->player) {
+      return true;
+    }
+    // checking if the old knight is two ranks down and one file left from
+    // the present position of the new move
+    if (board->tiles[move->rank - 2][moveLetter - 1].piece == KNIGHT &&
+        board->tiles[move->rank - 2][moveLetter - 1].player == move->player) {
+      return true;
+    }
+    // checking if the old knight is two ranks up and one file right from
+    // the present position of the new move
+    if (board->tiles[move->rank + 2][moveLetter + 1].piece == KNIGHT &&
+        board->tiles[move->rank + 2][moveLetter + 1].player == move->player) {
+      return true;
+    }
+    // checking if the old knight is one rank up and two files right from
+    // the present position of the new move
+    if (board->tiles[move->rank + 2][moveLetter - 1].piece == KNIGHT &&
+        board->tiles[move->rank + 2][moveLetter - 1].player == move->player) {
+      return true;
+    }
+    // checking if the old knight is one rank up and two files left from
+    // the present position of the new move
+    if (board->tiles[move->rank + 1][moveLetter + 2].piece == KNIGHT &&
+        board->tiles[move->rank + 1][moveLetter + 2].player == move->player) {
+      return true;
+    }
+    // checking if the old knight is one rank down and two files right from
+    // the present position of the new move
+    if (board->tiles[move->rank + 1][moveLetter - 2].piece == KNIGHT &&
+        board->tiles[move->rank + 1][moveLetter - 2].player == move->player) {
+      return true;
+    }
+    // checking if the old knight is one rank down and two files left from
+    // the present position of the new move
+    if (board->tiles[move->rank - 1][moveLetter + 2].piece == KNIGHT &&
+        board->tiles[move->rank - 1][moveLetter + 2].player == move->player) {
+      return true;
+    }
+    // checking if the old knight is two ranks down and one file right from
+    // the present position of the new move
+    if (board->tiles[move->rank - 1][moveLetter - 2].piece == KNIGHT &&
+        board->tiles[move->rank - 1][moveLetter - 2].player == move->player) {
+      return true;
+    }
+    break;
+  case BISHOP:
+    int file = move->file - 'A';
+    for (int i = 0; i < 8; i++) {
+      // checking down and right
+      if (board->tiles[move->rank - i][file + i].piece == move->piece &&
+          board->tiles[move->rank - i][file + i].player == move->player) {
+        return true;
+      }
+      // checking up and right
+      if (board->tiles[move->rank + i][file + i].piece == move->piece &&
+          board->tiles[move->rank + i][file + i].player == move->player) {
+        return true;
+      }
+      // checking down and left
+      if (board->tiles[move->rank - i][file - i].piece == move->piece &&
+          board->tiles[move->rank - i][file - i].player == move->player) {
+        return true;
+      }
+      // checking up and left
+      if (board->tiles[move->rank + i][file - i].piece == move->piece &&
+          board->tiles[move->rank + i][file - i].player == move->player) {
+        return true;
+      }
+    }
+    return false;
+    break;
+  case ROOK:
+    for (int i = 0; i < 8; i++) {
+      // checking up on the same file, returning if it finds one
+      if (board->tiles[move->rank - i][move->file - 'A'].piece ==
+              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank - i][move->file - 'A'].player ==
+              board->tiles[move->rank][move->file - 'A'].player) {
+        return true;
+      }
+      // checking down on the same file, returning if it finds one
+      if (board->tiles[move->rank + i][move->file - 'A'].piece ==
+              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank + i][move->file - 'A'].player ==
+              board->tiles[move->rank][move->file - 'A'].player) {
+        return true;
+      }
+      // checking left on the same rank, returning if it finds one
+      if (board->tiles[move->rank][move->file - 'A' - i].piece ==
+              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A' - i].player ==
+              board->tiles[move->rank][move->file - 'A'].player) {
+        return true;
+      }
+      // checking right on the same rank, returning if it finds one
+      if (board->tiles[move->rank][move->file - 'A' + i].piece ==
+              board->tiles[move->rank][move->file - 'A'].piece &&
+          board->tiles[move->rank][move->file - 'A' + i].player ==
+              board->tiles[move->rank][move->file - 'A'].player) {
+        return true;
+      }
+    }
+    break;
+  case KING:
+    int moveFile = move->file - 'A';
+    if (move->player == WHITE) {
+      if ((move->rank + 1 <= 7) && (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
+        if (board->tiles[move->rank + 1][moveFile + 1].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile + 1].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + 1][moveFile].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + 1][moveFile - 1].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile - 1].player == move->player) {
+          return true;
+        }
+      }
+      if (moveFile - 1 >= 0 || moveFile + 1 <= 7) {
+        if (board->tiles[move->rank][moveFile - 1].piece == move->piece &&
+            board->tiles[move->rank][moveFile - 1].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank][moveFile + 1].piece == move->piece &&
+            board->tiles[move->rank][moveFile + 1].player == move->player) {
+          return true;
+        }
+        if ((move->rank + 1 <= 7 || move->rank >= 0) &&
+            (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
+          if (board->tiles[move->rank - 1][moveFile - 1].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile - 1].player ==
+                  move->player) {
+            return true;
+          }
+          if (board->tiles[move->rank - 1][moveFile].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile].player == move->player) {
+            return true;
+          }
+          if (board->tiles[move->rank - 1][moveFile + 1].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile + 1].player ==
+                  move->player) {
+            return true;
+          }
+        }
+      }
+    }
+    if (move->player == BLACK) {
+      if ((move->rank + 1 <= 7) && (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
+        if (board->tiles[move->rank + 1][moveFile + 1].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile + 1].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + 1][moveFile].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + 1][moveFile - 1].piece == move->piece &&
+            board->tiles[move->rank + 1][moveFile - 1].player == move->player) {
+          return true;
+        }
+      }
+      if (moveFile - 1 >= 0 || moveFile + 1 <= 7) {
+        if (board->tiles[move->rank][moveFile - 1].piece == move->piece &&
+            board->tiles[move->rank][moveFile - 1].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank][moveFile + 1].piece == move->piece &&
+            board->tiles[move->rank][moveFile + 1].player == move->player) {
+          return true;
+        }
+        if ((move->rank + 1 <= 7 || move->rank >= 0) &&
+            (moveFile - 1 >= 0 || moveFile + 1 <= 7)) {
+          if (board->tiles[move->rank - 1][moveFile - 1].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile - 1].player ==
+                  move->player) {
+            return true;
+          }
+          if (board->tiles[move->rank - 1][moveFile].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile].player == move->player) {
+            return true;
+          }
+          if (board->tiles[move->rank - 1][moveFile + 1].piece == move->piece &&
+              board->tiles[move->rank - 1][moveFile + 1].player ==
+                  move->player) {
+            return true;
+          }
+        }
+      }
+      break;
+    case QUEEN:
+      int moveFile = move->file - 'A';
+      for (int i = 0; i < 8; i++) {
+        if (board->tiles[move->rank + i][moveFile].piece == move->piece &&
+            board->tiles[move->rank + i][moveFile].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + i][moveFile + i].piece == move->piece &&
+            board->tiles[move->rank + i][moveFile + i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank + i][moveFile - i].piece == move->piece &&
+            board->tiles[move->rank + i][moveFile - i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank - i][moveFile].piece == move->piece &&
+            board->tiles[move->rank - i][moveFile].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank - i][moveFile + i].piece == move->piece &&
+            board->tiles[move->rank - i][moveFile + i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank - i][moveFile - i].piece == move->piece &&
+            board->tiles[move->rank - i][moveFile - i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank][moveFile + i].piece == move->piece &&
+            board->tiles[move->rank][moveFile + i].player == move->player) {
+          return true;
+        }
+        if (board->tiles[move->rank][moveFile - i].piece == move->piece &&
+            board->tiles[move->rank][moveFile - i].player == move->player) {
+          return true;
+        }
+      }
+      break;
+    default:
+      printf("Move %s not found- legalMove\n", moveToString(move));
+      return false;
+      break;
+    }
+  }
+  return false;
+}
 bool rookCollision(const struct board *board, const struct move *move) {
   bool rank = false;
   bool up = false;
@@ -188,6 +481,11 @@ struct board *updateBoard(const struct board *board, const struct move *move) {
   // appending the piece that moved to an empty space where it came from
   switch (move->piece) {
   case PAWN: {
+    if (move.flags == TAKES) {
+      if (move.player == WHITE) {
+        break; //TODO
+      }
+    }
     if (legalMove(move, board)) {
       // the new board has the new move added to the board, piece and side
       newBoard->tiles[move->rank][move->file - 'A'].player = move->player;

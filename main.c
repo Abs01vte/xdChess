@@ -22,6 +22,7 @@
 #include "board.h"
 #include "list.h"
 #include "moves.h"
+#include "evaluation.h"
 #include <errno.h>
 #include <limits.h>
 #include <stdbool.h>
@@ -137,6 +138,7 @@ int main(int argc, const char *const *argv) {
       if (move->player == WHITE) {
         turn++;
         printf("Turn %d\n", turn);
+
       }
       struct board *newBoard = updateBoard(board, move);
       if (newBoard == NULL) {
@@ -145,6 +147,7 @@ int main(int argc, const char *const *argv) {
       destroyBoard(board);
       printBoard(newBoard);
       board = newBoard;
+      printf("Balance evaluation: %d\n", evaluateBoard(board));
       moveNode = moveNode->next;
     }
   }

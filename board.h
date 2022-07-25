@@ -1,5 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
+#include <stdbool.h>
+
 struct move;
 enum piece {
   EMPTY = '-',
@@ -31,6 +33,8 @@ struct board *makeBoard(void);
  */
 struct board *updateBoard(const struct board *board, const struct move *move);
 struct board *copyBoard(const struct board *board);
+// determines if the move is allowed to play
+bool legalMove(const struct move *move, const struct board *board);
 const char *getPieceString(enum piece piece);
 const char *getPlayerString(enum player player);
 void destroyBoard(struct board *);
